@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ezsmart.sqlLog">
+    <sql id="sqlPkConditions">
+                WHERE LOG_ID            =       #{logId}
+    </sql>
+    <sql id="sqlCols">
+                      LOG_ID
+                    , USER_ID
+                    , STR_DT
+                    , END_DT
+                    , EXEC_TIME
+                    , MENU_ID
+                    , DAO_MTHD
+                    , REG_ID
+                    , REG_DT
+                    , MOD_ID
+                    , MOD_DT
+    </sql>
+    <sql id="sqlConditions">
+                 FROM ZZ_SQL_LOG_M A
+                WHERE 1 = 1
+<!--         <if test="logId != null and logId != ''"> -->
+<!--                       AND LOG_ID            =       #{logId} -->
+<!--         </if> -->
+<!--         <if test="logSql != null and logSql != ''"> -->
+<!--                       AND LOG_SQL           =       #{logSql} -->
+<!--         </if> -->
+        <if test="userId != null and userId != ''">
+                      AND USER_ID           =       #{userId}
+        </if>
+        <if test="strDt != null and strDt != ''">
+                      AND STR_DT            >=       #{strDt}
+        </if>
+        <if test="endDt != null and endDt != ''">
+                      AND #{endDt} + 'A'          >=       END_DT
+        </if>
+<!--         <if test="execTime != null and execTime != ''"> -->
+<!--                       AND EXEC_TIME         =       #{execTime} -->
+<!--         </if> -->
+<!--         <if test="menuId != null and menuId != ''"> -->
+<!--                       AND MENU_ID           =       #{menuId} -->
+<!--         </if> -->
+<!--         <if test="daoMethod != null and daoMethod != ''"> -->
+<!--                       AND DAO_MTHD        =       #{daoMethod} -->
+<!--         </if> -->
+    </sql>
+    <select id="selectListCount" resultType="int">
+                SELECT COUNT(1)
+        <include refid="sqlConditions"/>
+    </select>
+    <select id="selectList" resultType="EzMap">
+        <include refid="ezsmart.inc.pagingHeader"/>
+               SELECT  LOG_SQL
+                    <!-- , (SELECT LOGIN_ID FROM ZZ_USER WHERE USER_ID = A.USER_ID )  LOGIN_ID -->
+                    , (SELECT USER_ID FROM ZZ_USER_M WHERE EMP_NO = A.USER_ID )  LOGIN_ID
+                    , (SELECT MENU_NM FROM ZZ_MENU_M WHERE MENU_ID = A.MENU_ID )  MENU_NAME
+                    , <include refid="sqlCols"/>
+        <include refid="sqlConditions"/>
+               ORDER BY REG_DT DESC
+        <include refid="ezsmart.inc.pagingFooter"/>
+    </select>
+    <select id="selectSqlLog" resultType="EzMap">
+               SELECT <include refid="sqlCols"/>
+                 FROM ZZ_SQL_LOG_M
+        <include refid="sqlPkConditions"/>
+    </select>
+    <insert id="insertSqlLog">
+                INSERT INTO ZZ_SQL_LOG_M (
+                    LOG_SQL,
+        <include refid="sqlCols"/>
+                 ) VALUES (
+                       #{logSql}
+                     ,#{logId}
+                     , #{userId}
+                     , #{strDt}
+                     , #{endDt}
+                     , #{execTime}
+                     , #{menuId}
+                     , #{daoMethod}
+                     , #{regId}
+                     , GETDATE()
+                     , #{modId}
+                     , GETDATE()
+                 )
+    </insert>
+    <update id="updateSqlLog">
+               UPDATE ZZ_SQL_LOG_M
+                  SET LOG_SQL             =         #{logSql}
+                    , USER_ID             =         #{userId}
+                    , STR_DT              =         #{strDt}
+                    , END_DT              =         #{endDt}
+                    , EXEC_TIME           =         #{execTime}
+                    , MENU_ID             =         #{menuId}
+                    , DAO_MTHD          =         #{daoMethod}
+                    , MOD_ID              =         #{modId}
+                    , MOD_DT              =         GETDATE()
+        <include refid="sqlPkConditions"/>
+    </update>
+    <delete id="deleteSqlLog">
+               DELETE FROM ZZ_SQL_LOG_M
+        <include refid="sqlPkConditions"/>
+    </delete>
+</mapper>

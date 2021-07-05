@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ezsmart.menu">
+<!-- 사용자별 권한 메뉴 가져오기 -->
+    <sql id="sqlPkConditions">
+        WHERE MENU_ID = #{menuId}
+        
+    </sql>
+    <sql id="sqlCols">
+               MENU_ID
+             , MENU_NAME
+             , MENU_URL
+             , UP_MENU_ID
+             , ROOT_MENU_ID
+             , MENU_LEVEL
+             , MENU_SORT
+             , MENU_SHOW_YN
+             , MENU_ICON
+<!--              , MENU_LANG -->
+             , MENU_AUTH_YN
+             , SQL_LOG_YN
+             , USE_YN
+             , REG_ID
+             , REG_DT
+             , MOD_ID
+             , MOD_DT
+             , 'Y' MENU_AUTH_C
+             , 'Y' MENU_AUTH_R
+             , 'Y' MENU_AUTH_U
+             , 'Y' MENU_AUTH_D
+    </sql>
+    <sql id="sqlCols2">
+               MENU_ID
+             , MENU_NAME
+             , MENU_URL
+             , UP_MENU_ID
+             , ROOT_MENU_ID
+             , MENU_LEVEL
+             , MENU_SORT
+             , MENU_SHOW_YN
+             , MENU_ICON
+<!--              , MENU_LANG -->
+             , MENU_AUTH_YN
+             , SQL_LOG_YN
+             , USE_YN
+             , REG_ID
+             , REG_DT
+             , MOD_ID
+             , MOD_DT
+    </sql>
+    <sql id="sqlConditions">
+          FROM TB_MENU A
+         WHERE 1=1
+         <if test="menuId != null and menuId != ''">
+           AND MENU_ID = #{menuId}
+         </if>  
+         <if test="menuLevel != null and menuLevel != ''">
+           AND MENU_LEVEL = #{menuLevel}
+         </if> 
+         <if test="upMenuId != null  and upMenuId != ''" >
+           AND UP_MENU_ID = #{upMenuId}
+         </if>
+         <if test="menuName != null and menuName != ''">
+           AND MENU_NAME LIKE '%' || #{menuName} || '%'
+         </if>
+         <if test="rootMenuId != null and rootMenuId != ''">
+           AND ROOT_MENU_ID LIKE '%' || #{rootMenuId} || '%'
+         </if>
+         <if test="menuUrl != null and menuUrl != ''">
+           AND MENU_URL = #{menuUrl}
+         </if>
+         <if test="menuAuthYn != null and menuAuthYn != ''">
+           AND MENU_AUTH_YN = #{menuAuthYn}
+         </if>
+         <if test="exGroupId != null and exGroupId != ''">
+           AND MENU_ID NOT IN (SELECT MENU_ID FROM TB_GROUP_MENU WHERE GROUP_ID = #{exGroupId})
+           AND MENU_URL IS NOT NULL
+           AND MENU_AUTH_YN = 'Y'
+         </if>
+         <if test="groupId != null and groupId != ''">
+           AND MENU_ID  IN (SELECT MENU_ID FROM TB_GROUP_MENU WHERE GROUP_ID = #{groupId})
+           AND MENU_URL IS NOT NULL
+           AND MENU_AUTH_YN = 'Y'
+         </if>
+    </sql>
+    
+    
+    <select id="selectUserMenuList" resultType="EzMenuMap">
+        SELECT A.MENU_ID
+             , A.MENU_NAME
+             , A.MENU_URL
+             , A.UP_MENU_ID
+             , A.ROOT_MENU_ID
+             , A.MENU_LEVEL
+             , A.MENU_SORT
+             , A.MENU_SHOW_YN
+             , A.MENU_ICON
+             , A.MENU_LANG
+             , A.MENU_AUTH_YN
+             , A.SQL_LOG_YN
+<!--              , A.MENU_ID             AS      ID -->
+<!--              , A.MENU_NAME           AS      TEXT -->
+<!--              , A.MENU_LEVEL          AS      LVL -->
+<!--              , A.UP_MENU_ID          AS      PARENT_ID -->
+<!--              , A.MENU_ICON           AS      ICON -->
+<!--              , A.MENU_URL            AS      HREF -->
+          FROM TB_MENU A
+         WHERE ROOT_MENU_ID          =           #{rootMenuId}
+           AND USE_YN                =           'Y'
+           AND (  A.MENU_AUTH_YN = 'N' 
+               OR A.MENU_ID IN (SELECT MENU_ID FROM TB_GROUP_MENU WHERE GROUP_ID IN (SELECT GROUP_ID FROM TB_GROUP_USER WHERE USER_ID = #{userId}))
+               OR A.MENU_URL IS NULL )
+         ORDER BY A.ROOT_MENU_ID, A.MENU_LEVEL, A.MENU_SORT
+    </select>
+    <select id="selectListCount" resultType="int">
+        SELECT COUNT(1)
+        <include refid="sqlConditions" />
+    </select>
+    <select id="selectList" resultType="EzMenuMap">
+        <include refid="ezsmart.inc.pagingHeader"/>
+       SELECT <include refid="sqlCols"/>
+ 	   <include refid="sqlConditions"/>
+ 	   ORDER BY MENU_ID
+        <include refid="ezsmart.inc.pagingFooter"/>
+    </select>
+    <select id="selectMenu" resultType="EzMenuMap">
+        SELECT <include refid="sqlCols" />
+       FROM TB_MENU
+      <include refid="sqlPkConditions" />
+    </select>
+    <update id="updateMenu">
+      UPDATE TB_MENU
+         SET   MENU_NAME            =       #{menuName}
+             , MENU_URL             =       #{menuUrl}
+             , MENU_SORT            =       #{menuSort}
+             , MENU_SHOW_YN         =       #{menuShowYn}
+             , MENU_ICON            =       #{menuIcon}
+             , MENU_AUTH_YN         =       #{menuAuthYn}
+             , SQL_LOG_YN           =       #{sqlLogYn}
+             , USE_YN               =       #{useYn}
+             , MOD_ID               =       #{modId}
+             , MOD_DT               =       SYSDATE
+         <include refid="sqlPkConditions" />
+    </update>
+    <insert id="insertMenu">
+        INSERT INTO TB_MENU (
+               <include refid="sqlCols2"/>
+         ) VALUES (
+               #{menuId}   
+             , #{menuName}
+             , #{menuUrl}
+			 , DECODE(#{menuLevel},1,NULL,#{upMenuId})      
+			 , DECODE(#{menuLevel},1,#{menuId},#{rootMenuId})    
+			 , #{menuLevel}
+			 , #{menuSort}
+			 , DECODE(#{menuShowYn},'Y','Y','N')
+			 , #{menuIcon}      
+<!-- 			 , #{menuLang}       -->
+			 , #{menuAuthYn}   
+             , NVL(#{sqlLogYn},'Y')
+             , #{useYn} 
+			 , #{modId}         
+			 , SYSDATE          
+             , #{regId}         
+             , SYSDATE 
+         )
+    </insert>
+    <delete id="deleteMenu">
+       DELETE TB_MENU
+       <include refid="sqlPkConditions" />
+    </delete>
+</mapper>

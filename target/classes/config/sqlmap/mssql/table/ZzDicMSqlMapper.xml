@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ezsmart.dic.ZzDicM">
+
+<!--
+ * 시스템명 : 테스트 프로젝트
+ * 생 성 자 : 안형기
+ * 생 성 일 : 2020-11-12
+ -->
+
+<!-- Row Count를 반환합니다. -->
+<select id="getRowCount" resultType="int">
+SELECT COUNT(1) CNT 
+  FROM ZZ_DIC_M A WITH (NOLOCK)                   /* 약어마스터 */
+ WHERE 1 = 1
+</select>
+
+<!-- 한건을 기준으로 select를 실행합니다. -->
+<select id="selectList" resultType="EzMap">
+SELECT 
+       A.DIC_KO                                   /* 약어한글 */
+     , A.DIC_EN                                   /* 영문FULL */
+     , A.DIC_ABB                                  /* 약어 */
+     , A.DIC_EXPL                                 /* 약어설명 */
+     , A.REG_ID                                   /* 등록자아이디 */
+     , A.REG_DT                                   /* 등록일 */
+     , A.MOD_ID                                   /* 수정자아이디 */
+     , A.MOD_DT                                   /* 수정일 */
+  FROM ZZ_DIC_M A WITH (NOLOCK)                   /* 약어마스터 */
+ WHERE A.DIC_KO = #{dicKo}
+   AND A.DIC_EN = #{dicEn}
+</select>
+
+<!-- 한건을 기준으로 insert를 실행합니다. -->
+<insert id="insert">
+INSERT INTO ZZ_DIC_M (                          /* 약어마스터 */
+       DIC_KO                                   /* 약어한글 */
+     , DIC_EN                                   /* 영문FULL */
+     , DIC_ABB                                  /* 약어 */
+     , DIC_EXPL                                 /* 약어설명 */
+     , REG_ID                                   /* 등록자아이디 */
+     , REG_DT                                   /* 등록일 */
+     , MOD_ID                                   /* 수정자아이디 */
+     , MOD_DT                                   /* 수정일 */
+) VALUES (
+       #{dicKo}
+     , #{dicEn}
+     , #{dicAbb}
+     , #{dicExpl}
+     , #{regId}
+     , GETDATE()
+     , #{modId}
+     , GETDATE()
+)
+</insert>
+
+<!-- 한건을 기준으로 update를 실행합니다. -->
+<update id="update">
+UPDATE ZZ_DIC_M                               /* 약어마스터 */
+   SET DIC_ABB  = #{dicAbb}                      /* 약어 */
+     , DIC_EXPL = #{dicExpl}                    /* 약어설명 */
+     , MOD_ID   = #{modId}                        /* 수정자아이디 */
+     , MOD_DT   = GETDATE()                       /* 수정일 */
+ WHERE DIC_KO   = #{dicKo}
+   AND DIC_EN   = #{dicEn}
+</update>
+
+<!-- 한건을 기준으로 delete를 실행합니다. -->
+<delete id="delete">
+DELETE FROM   ZZ_DIC_M                           /* 약어마스터 */
+ WHERE DIC_KO = #{dicKo}
+   AND DIC_EN = #{dicEn}
+</delete>
+
+
+</mapper>
+

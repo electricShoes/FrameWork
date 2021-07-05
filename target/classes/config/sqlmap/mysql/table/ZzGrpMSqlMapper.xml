@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ezsmart.zzGrpM">
+<!-- ZZ_GRP_M -->
+    
+    <!-- 그룹 수정 -->
+    <update id="updateGroup">
+       /* ZZ_GRP_M - updateGroup */
+       UPDATE ZZ_GRP_M
+          SET GRP_NM  = #{grpNm}
+            , MOD_ID  = #{modId}
+            , MOD_DT  = NOW()
+        WHERE GRP_ID  = #{grpId}
+    </update>
+    
+    <!-- 그룹 추가 -->
+    <insert id="insertGroup">
+        /* ZZ_GRP_M - insertGroup */
+        INSERT INTO ZZ_GRP_M (
+               CMPY_CD
+             , GRP_ID
+             , GRP_NM
+             , REG_ID
+             , REG_DT
+             , MOD_ID
+             , MOD_DT
+         ) VALUES (
+               '0000'
+             , #{grpId}
+             , #{grpNm}
+             , #{modId}
+             , NOW()
+             , #{regId}
+             , NOW()
+         )
+    </insert>
+    
+    <!-- 그룹 삭제 -->
+    <delete id="deleteGroup">
+       /* ZZ_GRP_M - deleteGroup */
+       DELETE ZZ_GRP_M
+        WHERE GRP_ID = #{grpId}
+    </delete>
+</mapper>

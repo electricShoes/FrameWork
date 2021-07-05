@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+	<!-- SqlSession setup for MyBatis Database Layer 
+	<bean id="sqlSessionMy" class="org.mybatis.spring.SqlSessionFactoryBean">
+		 <property name="dataSource" ref="dataSourceMy" />
+		<property name="configLocation" value="classpath:/config/sqlmap/example/sql-mapper-config.xml" />
+		<property name="mapperLocations" value="classpath:/config/sqlmap/example/mappers/*.xml" />
+	</bean>
+	
+	<bean id="sqlSessionTemplateMy" name="sqlSessionTemplateMy" destroy-method="clearCache"
+        class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg ref="sqlSessionMy" />
+    </bean>
+    
+	
+	<bean id="sqlSessionTemplateMs" name="sqlSessionTemplateMs" destroy-method="clearCache"
+        class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg ref="sqlSessionMy" />
+    </bean>
+    -->
+	
+	
+	<!-- MapperConfigurer setup for MyBatis Database Layer with @Mapper("deptMapper") in DeptMapper Interface -->
+ 	<!-- 
+ 	<bean class="egovframework.rte.psl.dataaccess.mapper.MapperConfigurer">
+		<property name="basePackage" value="egovframework.example.sample.service.impl" />
+	</bean>
+ 	 -->
+ 	<!-- ===================================================================================== -->
+ 	<!-- Mybatis mapper 사용을 위한 설정 시작 -->
+ 	<!-- 
+    <bean id="sqlSessionH2" name="sqlSessionH2" class="cspi.ezsmart.common.util.mybatis.RefreshableSqlSessionFactoryBean">
+     -->
+    <bean id="sqlSessionH2" name="sqlSessionH2" class="org.mybatis.spring.SqlSessionFactoryBean"> 
+        <property name="dataSource" ref="dataSourceH2" />
+		<property name="configLocation" value="classpath:config/mybatis/mybatis-config-base.xml" />
+        <property name="mapperLocations" value="classpath:/config/sqlmap/mysql/**/*SqlMapper.xml" />
+	    <!--
+        <property name="dataSource" ref="dataSourceH2" />
+        <property name="configLocation" value="classpath:config/mybatis/mybatis-config-base.xml" />
+        <property name="mapperLocations" value="classpath:/config/sqlmap/oracle/**/*SqlMapper.xml" />
+        <property name="interval" value="5000" />
+         -->
+        <!-- mapper xml 파일을 재로딩 하는 간격 -->
+    </bean>
+ 
+    <bean id="sqlSessionTemplateH2" name="sqlSessionTemplateH2" destroy-method="clearCache"
+        class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg ref="sqlSessionH2" />
+    </bean>
+    
+    
+</beans>

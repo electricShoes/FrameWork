@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ezsmart.code">
+    <sql id="sqlPkConditions">
+        WHERE CODE_ID           =       #{codeId}
+          AND CODE_LEVEL        =       #{codeLevel}
+          AND UP_CODE_ID        =       DECODE(#{codeLevel},1,'000',#{upCodeId})
+          AND ROOT_CODE_ID      =       #{rootCodeId}
+          AND LANG_GB           =       NVL(#{langGb},LANG_GB)
+    </sql>
+    <sql id="sqlCols">
+               CODE_ID
+             , CODE_LEVEL
+             , CODE_SORT
+             , UP_CODE_ID
+             , CODE_NAME
+             , ROOT_CODE_ID
+             , LANG_GB
+             , USE_YN
+             , REF_ID1
+             , REF_ID2
+             , REF_ID3
+             , REF_ID4
+             , REF_ID5
+             , REF_ID6
+             , REF_ID7
+             , REF_ID8
+             , REF_ID9
+             , USE_YN1
+             , USE_YN2
+             , USE_YN3
+             , USE_YN4
+             , USE_YN5
+             , USE_YN6
+             , USE_YN7
+             , USE_YN8
+             , USE_YN9
+             , REG_ID
+             , REG_DT
+             , MOD_ID
+             , MOD_DT
+    </sql>
+    <sql id="sqlConditions">
+        FROM TB_CODE A
+         WHERE 1=1
+        <if test="codeId != null and codeId != ''">
+          AND CODE_ID = #{codeId}
+        </if>  
+        <if test="codeLevel != null and codeLevel != ''">
+          AND CODE_LEVEL = #{codeLevel}
+        </if> 
+        <if test="upCodeId != null  and upCodeId != ''" >
+          AND UP_CODE_ID = #{upCodeId}
+        </if>
+        <if test="codeName != null and codeName != ''">
+          AND CODE_NAME LIKE '%' || #{codeName} || '%'
+        </if>
+        <if test="rootCodeId != null and rootCodeId != ''">
+          AND ROOT_CODE_ID LIKE '%' || #{rootCodeId} || '%'
+        </if>
+        <if test="langGb != null and langGb != ''">
+          AND LANG_GB LIKE '%' || #{langGb} || '%'
+        </if>
+    </sql>
+    <select id="selectCodeCombo" resultType="EzMap">
+        SELECT CODE_ID
+             , CODE_NAME
+          FROM TB_CODE
+         WHERE ROOT_CODE_ID = DECODE( #{codeLevel},1,ROOT_CODE_ID,#{rootCodeId})
+         <choose>
+            <when test="upCodeId != null and upCodeId != ''">
+            AND UP_CODE_ID = #{upCodeId}
+            </when>
+            <otherwise>
+            AND UP_CODE_ID = '000'
+            AND CODE_LEVEL = 1
+            </otherwise>
+         </choose>
+         <choose>
+            <when test="codeLevel != null and codeLevel != ''">
+            AND CODE_LEVEL = #{codeLevel}
+            </when>
+            <otherwise>
+            AND CODE_LEVEL = 3
+            </otherwise>
+         </choose>
+         <if test="useYn != null and useYn != ''">
+           AND USE_YN = #{useYn} 
+         </if>     
+         <if test="useYn1 != null and useYn1 != ''">
+           AND USE_YN1 = #{useYn1} 
+         </if>   
+         <if test="useYn2 != null and useYn2 != ''">
+           AND USE_YN2 = #{useYn2} 
+         </if>
+         <if test="useYn3 != null and useYn3 != ''">
+           AND USE_YN3 = #{useYn3} 
+         </if>
+         <if test="useYn4 != null and useYn4 != ''">
+           AND USE_YN4 = #{useYn4} 
+         </if>
+         <if test="useYn5 != null and useYn5 != ''">
+           AND USE_YN5 = #{useYn5} 
+         </if>
+         <if test="useYn6 != null and useYn6 != ''">
+           AND USE_YN6 = #{useYn6} 
+         </if>
+         <if test="useYn7 != null and useYn7 != ''">
+           AND USE_YN7 = #{useYn7} 
+         </if>
+         <if test="useYn8 != null and useYn8 != ''">
+           AND USE_YN8 = #{useYn8} 
+         </if>
+         <if test="useYn9 != null and useYn9 != ''">
+           AND USE_YN9 = #{useYn9} 
+         </if>
+        ORDER BY CODE_SORT, CODE_ID 
+    </select>
+    <select id="selectCode" resultType="EzMap">
+        SELECT 
+        <include refid="sqlCols" />
+        , (SELECT COUNT(1) FROM TB_CODE Z WHERE A.CODE_ID = UP_CODE_ID AND A.CODE_LEVEL+1 = CODE_LEVEL AND A.ROOT_CODE_ID = ROOT_CODE_ID) CHIDREN_CNT
+        FROM TB_CODE A
+        <include refid="sqlPkConditions" />
+    </select>
+    <select id="selectList" resultType="EzMap">
+         
+    <include refid="ezsmart.inc.pagingHeader"/>
+        SELECT 
+        <include refid="sqlCols" />
+        , (SELECT COUNT(1) FROM TB_CODE Z WHERE A.CODE_ID = UP_CODE_ID AND A.CODE_LEVEL+1 = CODE_LEVEL AND A.ROOT_CODE_ID = ROOT_CODE_ID) CHIDREN_CNT
+        <include refid="sqlConditions" />
+        ORDER BY CODE_LEVEL,CODE_SORT,CODE_ID
+        <include refid="ezsmart.inc.pagingFooter"/>
+    </select>
+    <select id="selectListCount" resultType="int">
+        SELECT COUNT(1)
+        <include refid="sqlConditions" />
+    </select>
+    <insert id="insertCode">
+    INSERT INTO TB_CODE
+    (
+           CODE_ID
+         , CODE_LEVEL
+         , CODE_SORT
+         , UP_CODE_ID
+         , CODE_NAME
+         , ROOT_CODE_ID
+         , LANG_GB
+         , USE_YN
+         , REF_ID1
+         , REF_ID2
+         , REF_ID3
+         , REF_ID4
+         , REF_ID5
+         , REF_ID6
+         , REF_ID7
+         , REF_ID8
+         , REF_ID9
+         , USE_YN1
+         , USE_YN2
+         , USE_YN3
+         , USE_YN4
+         , USE_YN5
+         , USE_YN6
+         , USE_YN7
+         , USE_YN8
+         , USE_YN9
+         , REG_ID
+         , REG_DT
+         , MOD_ID
+         , MOD_DT
+    ) 
+    VALUES
+    (
+           #{codeId}
+         , #{codeLevel}
+         , #{codeSort}
+         , DECODE(#{codeLevel},1,'000',#{upCodeId})
+         , #{codeName}
+         , #{rootCodeId}
+         , NVL(#{langGb},'KO')
+         , NVL(#{useYn},'Y')
+         , #{refId1}
+         , #{refId2}
+         , #{refId3}
+         , #{refId4}
+         , #{refId5}
+         , #{refId6}
+         , #{refId7}
+         , #{refId8}
+         , #{refId9}
+         , NVL(#{useYn1},'Y')
+         , NVL(#{useYn2},'Y')
+         , NVL(#{useYn3},'Y')
+         , NVL(#{useYn4},'Y')
+         , NVL(#{useYn5},'Y')
+         , NVL(#{useYn6},'Y')
+         , NVL(#{useYn7},'Y')
+         , NVL(#{useYn8},'Y')
+         , NVL(#{useYn9},'Y')
+         , #{regId}
+         , SYSDATE
+         , #{modId}
+         , SYSDATE
+    )
+    </insert>
+    
+    <update id="updateCode">
+    UPDATE TB_CODE
+       SET CODE_SORT          =          #{codeSort}   
+         , CODE_NAME          =          #{codeName}   
+         , USE_YN             =          NVL(#{useYn},'Y')      
+         , REF_ID1            =          #{refId1}     
+         , REF_ID2            =          #{refId2}     
+         , REF_ID3            =          #{refId3}     
+         , REF_ID4            =          #{refId4}     
+         , REF_ID5            =          #{refId5}     
+         , REF_ID6            =          #{refId6}     
+         , REF_ID7            =          #{refId7}     
+         , REF_ID8            =          #{refId8}     
+         , REF_ID9            =          #{refId9}     
+         , USE_YN1            =          NVL(#{useYn1},'Y')     
+         , USE_YN2            =          NVL(#{useYn2},'Y')     
+         , USE_YN3            =          NVL(#{useYn3},'Y')     
+         , USE_YN4            =          NVL(#{useYn4},'Y')     
+         , USE_YN5            =          NVL(#{useYn5},'Y')     
+         , USE_YN6            =          NVL(#{useYn6},'Y')     
+         , USE_YN7            =          NVL(#{useYn7},'Y')     
+         , USE_YN8            =          NVL(#{useYn8},'Y')     
+         , USE_YN9            =          NVL(#{useYn9},'Y')     
+         , MOD_ID             =          #{modId}     
+         , MOD_DT             =          SYSDATE
+     <include refid="sqlPkConditions" />
+    </update>
+    <delete id="deleteCode">
+    DELETE FROM TB_CODE
+    <include refid="sqlPkConditions" />
+    </delete>
+</mapper>

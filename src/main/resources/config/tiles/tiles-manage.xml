@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC 
+    "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" 
+    "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+    
+    <!-- <definition name="_manage_definitions" template="/WEB-INF/jsp/tiles/manage/common/definitions.jsp" /> -->
+    <!-- <definition name="_manage_pagination_top" template="/WEB-INF/jsp/tiles/manage/common/pagination_top.jsp" /> -->
+    <!-- <definition name="_manage_pagination" template="/WEB-INF/jsp/tiles/manage/common/pagination.jsp" /> -->
+    <!-- <definition name="_manage_defCodeCombo" template="/WEB-INF/jsp/tiles/manage/common/defCodeCombo.jsp" /> -->
+    <!-- <definition name="_manage_main_body_footer" template="/WEB-INF/jsp/tiles/manage/common/bodyFooter.jsp" /> -->
+    <!-- <definition name="_manage_main_header" template="/WEB-INF/jsp/tiles/manage/common/header.jsp" /> -->
+    <!-- <definition name="_manage_main_index" template="/WEB-INF/jsp/tiles/manage/main/index.jsp" /> -->
+    <!-- <definition name="_manage_main_topMenu" template="/WEB-INF/jsp/tiles/manage/main/topMenu.jsp"/> -->
+    <!-- <definition name="_manage_main_Menu" template="/WEB-INF/jsp/tiles/manage/main/mainMenu.jsp" /> -->
+    <!-- <definition name="_manage_main_footer" template="/WEB-INF/jsp/tiles/manage/main/footer.jsp" /> -->
+    <!-- <definition name="_manage_popup_index" template="/WEB-INF/jsp/tiles/manage/main/popup.jsp" /> -->
+ 	<!-- =============================================================================================================== -->   
+    
+    <definition name="_manage_main_index" template="/WEB-INF/jsp/tiles/manage/index.jsp" />
+    <definition name="_manage_main_index_tab" template="/WEB-INF/jsp/tiles/manage/index_tab.jsp" />
+
+    <definition name="_manage_blank_index" template="/WEB-INF/jsp/tiles/manage/blank.jsp" />
+    <definition name="_manage_blank_body_index" template="/WEB-INF/jsp/tiles/manage/blankBody.jsp" />
+
+     
+    <definition name="WILDCARD:manage/blank/*/**" extends="_manage_blank_index">
+        <put-attribute name="content" value="/WEB-INF/jsp/view/manage/{1}/{2}.jsp" type="template" />
+    </definition>
+
+    <definition name="WILDCARD:manage/blankBody/*/**" extends="_manage_blank_body_index">
+        <put-attribute name="content" value="/WEB-INF/jsp/view/manage/{1}/{2}.jsp" type="template" />
+    </definition>
+
+    <definition name="manage/main/index" extends="_manage_main_index_tab">
+    </definition>
+
+
+    <definition name="WILDCARD:manage/*/**" extends="_manage_blank_index"> 
+        <put-attribute name="content" value="/WEB-INF/jsp/view/manage/{1}/{2}.jsp" type="template" /> 
+    </definition>
+    
+     <definition name="WILDCARD:page/*/**" extends="_manage_blank_index"> 
+        <put-attribute name="content" value="/WEB-INF/jsp/view/page/{1}/{2}.jsp" type="template" /> 
+    </definition>
+     
+    
+    <!-- =============================================================================================================== -->
+    <!-- 
+    <definition name="WILDCARD:manage/*/**" extends="_manage_main_index">
+        <put-attribute name="content" value="/WEB-INF/jsp/view/manage/{1}/{2}.jsp" type="template" />
+    </definition>
+     -->
+
+</tiles-definitions>

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ezsmart.base.ZzCorpM">
+
+<!--
+ * 시스템명 : 테스트 프로젝트
+ * 생 성 자 : 정일찬
+ * 생 성 일 : 2020-11-12
+ -->
+
+
+
+
+<!-- 한건을 기준으로 insert를 실행합니다. -->
+<insert id="insert">
+INSERT INTO ZZ_CORP_M (                           /* 법인정보 */
+       CMPY_CD                                    /* 회사코드 */
+     , CMPY_NM                                    /* 회사한글명 */
+     , CMPY_EN_NM                                 /* 회사영문명 */
+     , CORP_NM                                    /* 공시회사명 */
+     , BIZR_REG_NO                                /* 사업자등록번호 */
+     , CORP_SSN                                   /* 법인등록번호 */
+     , AITM_CD                                    /* 종목 */
+     , TPIS_CD                                    /* 업종 */
+     , REP_NM                                     /* 대표자성명 */
+     , REP_CRFR_NO                                /* 대표자주민번호 */
+     , ZIP_NO                                     /* 우편번호 */
+     , PBZ_ADR                                    /* 사업장주소 */
+     , PBZ_DTL_ADR                                /* 사업장상세주소 */
+     , TEL_NO                                     /* 전화번호 */
+     , FAX_NO                                     /* FAX번호 */
+     , HOME_PAGE                                  /* 홈페이지 */
+     , ESTB_DT                                    /* 회사설립일 */
+     , REG_ID                                     /* 등록자아이디 */
+     , REG_DT                                     /* 등록일 */
+     , MOD_ID                                     /* 수정자아이디 */
+     , MOD_DT                                     /* 수정일 */
+) VALUES (
+       #{cmpyCd}
+     , #{cmpyNm}
+     , #{cmpyEnNm}
+     , #{corpNm}
+     , #{bizrRegNo}
+     , #{corpSsn}
+     , #{aitmCd}
+     , #{tpisCd}
+     , #{repNm}
+     , #{repCrfrNo}
+     , #{zipNo}
+     , #{pbzAdr}
+     , #{pbzDtlAdr}
+     , #{telNo}
+     , #{faxNo}
+     , #{homePage}
+     , #{estbDt}
+     , #{regId}
+     , GETDATE()
+     , #{modId}
+     , GETDATE()
+)
+</insert>
+
+<!-- 한건을 기준으로 update를 실행합니다. -->
+<update id="update">
+UPDATE ZZ_CORP_M SET                              /* 법인정보 */
+       CMPY_NM = #{cmpyNm}                        /* 회사한글명 */
+     , CMPY_EN_NM = #{cmpyEnNm}                   /* 회사영문명 */
+     , CORP_NM = #{corpNm}                        /* 공시회사명 */
+     , BIZR_REG_NO = #{bizrRegNo}                 /* 사업자등록번호 */
+     , CORP_SSN = #{corpSsn}                      /* 법인등록번호 */
+     , AITM_CD = #{aitmCd}                        /* 종목 */
+     , TPIS_CD = #{tpisCd}                        /* 업종 */
+     , REP_NM = #{repNm}                          /* 대표자성명 */
+     , REP_CRFR_NO = #{repCrfrNo}                 /* 대표자주민번호 */
+     , ZIP_NO = #{zipNo}                          /* 우편번호 */
+     , PBZ_ADR = #{pbzAdr}                        /* 사업장주소 */
+     , PBZ_DTL_ADR = #{pbzDtlAdr}                 /* 사업장상세주소 */
+     , TEL_NO = #{telNo}                          /* 전화번호 */
+     , FAX_NO = #{faxNo}                          /* FAX번호 */
+     , HOME_PAGE = #{homePage}                    /* 홈페이지 */
+     , ESTB_DT = #{estbDt}                        /* 회사설립일 */
+     , MOD_ID = #{modId}                          /* 수정자아이디 */
+     , MOD_DT = GETDATE()                         /* 수정일 */
+ WHERE CMPY_CD = #{cmpyCd}
+</update>
+
+<!-- 한건을 기준으로 delete를 실행합니다. -->
+<delete id="delete">
+DELETE FROM   ZZ_CORP_M                           /* 법인정보 */
+ WHERE CMPY_CD = #{cmpyCd}
+</delete>
+
+<!-- 한건을 기준으로 merge를 실행합니다. -->
+<update id="merge">
+ MERGE INTO ZZ_CORP_M A                           /* 법인정보 */
+ USING (
+            SELECT
+                   #{cmpyCd} AS CMPY_CD
+       ) B ON ( 
+                   A.CMPY_CD = B.CMPY_CD
+      )
+  WHEN MATCHED THEN
+UPDATE SET
+       A.CMPY_NM = #{cmpyNm}                      /* 회사한글명 */
+     , A.CMPY_EN_NM = #{cmpyEnNm}                 /* 회사영문명 */
+     , A.CORP_NM = #{corpNm}                      /* 공시회사명 */
+     , A.BIZR_REG_NO = #{bizrRegNo}               /* 사업자등록번호 */
+     , A.CORP_SSN = #{corpSsn}                    /* 법인등록번호 */
+     , A.AITM_CD = #{aitmCd}                      /* 종목 */
+     , A.TPIS_CD = #{tpisCd}                      /* 업종 */
+     , A.REP_NM = #{repNm}                        /* 대표자성명 */
+     , A.REP_CRFR_NO = #{repCrfrNo}               /* 대표자주민번호 */
+     , A.ZIP_NO = #{zipNo}                        /* 우편번호 */
+     , A.PBZ_ADR = #{pbzAdr}                      /* 사업장주소 */
+     , A.PBZ_DTL_ADR = #{pbzDtlAdr}               /* 사업장상세주소 */
+     , A.TEL_NO = #{telNo}                        /* 전화번호 */
+     , A.FAX_NO = #{faxNo}                        /* FAX번호 */
+     , A.HOME_PAGE = #{homePage}                  /* 홈페이지 */
+     , A.ESTB_DT = #{estbDt}                      /* 회사설립일 */
+     , A.MOD_ID = #{modId}                        /* 수정자아이디 */
+     , A.MOD_DT = GETDATE()                       /* 수정일 */
+  WHEN NOT MATCHED THEN 
+INSERT VALUES ( 
+       #{cmpyCd}
+     , #{cmpyNm}  
+     , #{cmpyEnNm}  
+     , #{corpNm}  
+     , #{bizrRegNo}  
+     , #{corpSsn}  
+     , #{aitmCd}  
+     , #{tpisCd}  
+     , #{repNm}  
+     , #{repCrfrNo}  
+     , #{zipNo}  
+     , #{pbzAdr}  
+     , #{pbzDtlAdr}  
+     , #{telNo}  
+     , #{faxNo}  
+     , #{homePage}  
+     , #{estbDt}  
+     , #{regId}  
+     , GETDATE()
+     , #{modId}  
+     , GETDATE()
+);
+</update>
+
+</mapper>
+

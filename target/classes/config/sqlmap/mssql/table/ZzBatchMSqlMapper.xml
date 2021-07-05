@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ezsmart.zzBatchM">
+<!-- ZZ_BATCH_M -->
+    
+    <insert id="insertBatch">
+        /* ZZ_BATCH_M - insertBatch */
+        INSERT INTO ZZ_BATCH_M (
+              BAT_ID
+            , BAT_NM
+            , BAT_OBJ_NM
+            , BAT_DESC
+            , BAT_CRON
+            , BAT_OBJ_TYPE
+            , USE_YN
+            , REG_ID
+            , REG_DT
+            , MOD_ID
+            , MOD_DT
+         ) VALUES (
+              #{batId}
+            , #{batName}
+            , #{batObjName}
+            , #{batDesc}
+            , #{batCron}
+            , #{batObjType}
+            , #{useYn}
+            , #{regId}
+            , GETDATE()
+            , #{modId}
+            , GETDATE()
+         )
+    </insert>
+    
+    <update id="updateBatch">
+        /* ZZ_BATCH_M - updateBatch */
+        UPDATE ZZ_BATCH_M
+           SET BAT_NM            =         #{batName}
+             , BAT_OBJ_NM        =         #{batObjName}
+             , BAT_DESC          =         #{batDesc}
+             , BAT_CRON          =         #{batCron}
+             , BAT_OBJ_TYPE      =         #{batObjType}
+             , USE_YN            =         #{useYn}
+             , MOD_ID            =         #{modId}
+             , MOD_DT            =         GETDATE()
+         WHERE BAT_ID            =         #{batId}
+    </update>
+    
+    <delete id="deleteBatch">
+        /* ZZ_BATCH_M - deleteBatch */
+        DELETE FROM ZZ_BATCH_M
+         WHERE BAT_ID = #{batId}
+    </delete>
+</mapper>

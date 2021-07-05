@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ezsmart.page.TbAiStdDtaMst">
+
+<!--
+ * 시스템명 : MWRS
+ * 생 성 자 : 전성기
+ * 생 성 일 : 2021-01-20
+ -->
+
+<!-- Row Count를 반환합니다. -->
+<select id="selectListCount" resultType="int">
+SELECT COUNT(*) CNT
+  FROM (
+        SELECT A.* 
+          FROM TB_AI_STD_DTA_MST A                  /* 학습데이터마스터 */
+               LEFT OUTER JOIN TB_AI_STD_RSL_I B                    /* 학습데이터결과정보 */
+          ON A.STDY_DTA_MNG_NO = B.STDY_DTA_MNG_NO
+        WHERE 1=1
+         <if test="dtasNm != null and dtasNm != ''">
+           AND A.DTAS_NM = #{dtasNm}
+         </if>
+         <if test="seaNm != null and seaNm != ''">
+           AND A.SEA_NM IN (SELECT X.DTL_CD
+                              FROM ZZ_CODE_D X
+                             WHERE X.MST_CD = 'PORT_CD'
+                               AND X.REF_CD1 = #{seaNm}) 
+         </if>
+         <if test="portCd != null and portCd != ''">
+           AND A.SEA_NM = #{portCd}
+         </if>
+         <if test="objNm != null and objNm != ''">
+           AND B.OBJ_NM = #{objNm}
+         </if>
+         GROUP BY A.STDY_DTA_MNG_NO
+             , A.FL_UP_FLDR_NM
+             , A.IMG_FL_NM
+             , A.IMG_FL_PTH
+             , A.IMG_WDTH
+             , A.IMG_HGT
+             , A.IMG_DPTH
+             , A.DTAS_NM
+             , A.SEA_NM
+             , A.LATT_DD
+             , A.LNGT_DD
+             , A.DPTH_OF_WTER
+             , A.TMPT
+             , A.RMK
+        ) M
+</select>
+
+<!-- Row Count를 반환합니다. -->
+<select id="getRowCount2" resultType="int">
+SELECT COUNT(1) CNT 
+  FROM TB_AI_STD_DTA_MST A                   /* 공통코드마스터 */
+ WHERE 1 = 1
+</select>
+
+<!-- 한건을 기준으로 select를 실행합니다. -->
+<select id="selectList" resultType="EzMap">
+SELECT A.STDY_DTA_MNG_NO                        /* 학습데이터관리번호 */
+     , A.FL_UP_FLDR_NM                          /* 파일상위폴더명 */
+     , A.IMG_FL_NM                              /* 이미지파일명 */
+     , A.IMG_FL_PTH                             /* 이미지파일경로 */
+     , A.IMG_WDTH                               /* 이미지넓이 */
+     , A.IMG_HGT                                /* 이미지높이 */
+     , A.IMG_DPTH                               /* 이미지채널 */
+     , A.DTAS_NM                                /* 데이터셋명 */
+     , A.SEA_NM                                 /* 촬영해역명 */
+     , A.LATT_DD                                /* 촬영위치위도(DD) */
+     , A.LNGT_DD                                /* 촬영위치경도(DD) */
+     , A.DPTH_OF_WTER                           /* 촬영위치평균수심 */
+     , A.TMPT                                   /* 수온 */
+     , A.RMK                                    /* 비고 */
+     , B.OBJ_NM                                 /* 객체명 */
+     , A.IMG_FL_NM_REAL
+  FROM TB_AI_STD_DTA_MST A                  /* 학습데이터마스터 */
+       LEFT OUTER JOIN TB_AI_STD_RSL_I B                    /* 학습데이터결과정보 */
+    ON A.STDY_DTA_MNG_NO = B.STDY_DTA_MNG_NO
+ WHERE 1=1
+ <if test="dtasNm != null and dtasNm != ''">
+   AND A.DTAS_NM = #{dtasNm}
+ </if>
+ <if test="seaNm != null and seaNm != ''">
+   AND A.SEA_NM IN (SELECT X.DTL_CD
+                      FROM ZZ_CODE_D X
+                     WHERE X.MST_CD = 'PORT_CD'
+                       AND X.REF_CD1 = #{seaNm}) 
+ </if>
+ <if test="portCd != null and portCd != ''">
+   AND A.SEA_NM = #{portCd}
+ </if>
+ 
+ <if test="objNm != null and objNm != ''">
+   AND B.OBJ_NM = #{objNm}
+ </if>
+
+ <if test="stdyDtaMngNo != null and stdyDtaMngNo != ''">
+   AND A.STDY_DTA_MNG_NO = #{stdyDtaMngNo}
+ </if>
+ 
+GROUP BY A.STDY_DTA_MNG_NO
+     , A.FL_UP_FLDR_NM
+     , A.IMG_FL_NM
+     , A.IMG_FL_PTH
+     , A.IMG_WDTH
+     , A.IMG_HGT
+     , A.IMG_DPTH
+     , A.DTAS_NM
+     , A.SEA_NM
+     , A.LATT_DD
+     , A.LNGT_DD
+     , A.DPTH_OF_WTER
+     , A.TMPT
+     , A.RMK
+ ORDER BY A.STDY_DTA_MNG_NO
+        , A.SEA_NM
+        , A.DTAS_NM
+        , A.LATT_DD
+        , A.LNGT_DD
+        , B.OBJ_NM
+<include refid="ezsmart.inc.pagingFooter"/>
+</select>
+
+<!-- 한건을 기준으로 select를 실행합니다. -->
+<select id="selectList2" resultType="EzMap">
+SELECT 
+       A.CMPY_CD                                  /* 회사코드 */
+     , A.MST_CD                                   /* 마스터코드 */
+     , A.MST_NM                                   /* 마스터코드명 */
+     , A.USE_YN                                   /* 사용여부 */
+     , A.REF_FLD_NM1                              /* 참조필드명1 */
+     , A.REF_FLD_NM2                              /* 참조필드명2 */
+     , A.REF_FLD_NM3                              /* 참조필드명3 */
+     , A.REF_FLD_NM4                              /* 참조필드명4 */
+     , A.REF_FLD_NM5                              /* 참조필드명5 */
+     , A.REF_NUM_NM1                              /* 참조숫자명1 */
+     , A.REF_NUM_NM2                              /* 참조숫자명2 */
+     , A.REF_NUM_NM3                              /* 참조숫자명3 */
+     , A.REF_NUM_NM4                              /* 참조숫자명4 */
+     , A.REF_NUM_NM5                              /* 참조숫자명5 */
+     , A.REG_ID                                   /* 등록자아이디 */
+     , A.REG_DT                                   /* 등록일 */
+     , A.MOD_ID                                   /* 수정자아이디 */
+     , A.MOD_DT                                   /* 수정일 */
+  FROM TB_AI_STD_DTA_MST A                   /* 공통코드마스터 */
+ WHERE 1=1 
+ <if test="useYn != null and useYn != ''">
+   AND A.USE_YN = #{useYn}
+ </if>  
+ <if test="mstCd != null and mstCd != ''">
+   AND A.MST_CD = #{mstCd}
+ </if>  
+ <if test="mstNm != null and mstNm != ''">
+   AND A.MST_NM LIKE % + #{mstNm} + %
+ </if>  
+</select>
+
+<!-- 한건을 기준으로 insert를 실행합니다. -->
+<insert id="insert">
+INSERT INTO TB_AI_STD_DTA_MST (                           /* 공통코드마스터 */
+       CMPY_CD                                    /* 회사코드 */
+     , MST_CD                                     /* 마스터코드 */
+     , MST_NM                                     /* 마스터코드명 */
+     , USE_YN                                     /* 사용여부 */
+     , REF_FLD_NM1                                /* 참조필드명1 */
+     , REF_FLD_NM2                                /* 참조필드명2 */
+     , REF_FLD_NM3                                /* 참조필드명3 */
+     , REF_FLD_NM4                                /* 참조필드명4 */
+     , REF_FLD_NM5                                /* 참조필드명5 */
+     , REF_NUM_NM1                                /* 참조숫자명1 */
+     , REF_NUM_NM2                                /* 참조숫자명2 */
+     , REF_NUM_NM3                                /* 참조숫자명3 */
+     , REF_NUM_NM4                                /* 참조숫자명4 */
+     , REF_NUM_NM5                                /* 참조숫자명5 */
+     , REG_ID                                     /* 등록자아이디 */
+     , REG_DT                                     /* 등록일 */
+     , MOD_ID                                     /* 수정자아이디 */
+     , MOD_DT                                     /* 수정일 */
+) VALUES (
+       '0000'
+     , #{mstCd}
+     , #{mstNm}
+     , #{useYn}
+     , #{refFldNm1}
+     , #{refFldNm2}
+     , #{refFldNm3}
+     , #{refFldNm4}
+     , #{refFldNm5}
+     , #{refNumNm1}
+     , #{refNumNm2}
+     , #{refNumNm3}
+     , #{refNumNm4}
+     , #{refNumNm5}
+     , #{regId}
+     , NOW()
+     , #{modId}
+     , NOW()
+)
+</insert>
+
+<!-- 한건을 기준으로 update를 실행합니다. -->
+<update id="update">
+UPDATE TB_AI_STD_DTA_MST SET                              /* 공통코드마스터 */
+       MST_NM = #{mstNm}                          /* 마스터코드명 */
+     , USE_YN = #{useYn}                          /* 사용여부 */
+     , REF_FLD_NM1 = #{refFldNm1}                 /* 참조필드명1 */
+     , REF_FLD_NM2 = #{refFldNm2}                 /* 참조필드명2 */
+     , REF_FLD_NM3 = #{refFldNm3}                 /* 참조필드명3 */
+     , REF_FLD_NM4 = #{refFldNm4}                 /* 참조필드명4 */
+     , REF_FLD_NM5 = #{refFldNm5}                 /* 참조필드명5 */
+     , REF_NUM_NM1 = #{refNumNm1}                 /* 참조숫자명1 */
+     , REF_NUM_NM2 = #{refNumNm2}                 /* 참조숫자명2 */
+     , REF_NUM_NM3 = #{refNumNm3}                 /* 참조숫자명3 */
+     , REF_NUM_NM4 = #{refNumNm4}                 /* 참조숫자명4 */
+     , REF_NUM_NM5 = #{refNumNm5}                 /* 참조숫자명5 */
+     , MOD_ID = #{modId}                          /* 수정자아이디 */
+     , MOD_DT = NOW()                         /* 수정일 */
+ WHERE MST_CD = #{mstCd}
+</update>
+
+<!-- 한건을 기준으로 delete를 실행합니다. -->
+<delete id="delete">
+DELETE FROM   TB_AI_STD_DTA_MST                           /* 공통코드마스터 */
+ WHERE MST_CD = #{mstCd}
+</delete>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- mdj 시작 -->
+<select id="selectImgBindPopList" resultType="EzMap">
+/*selectImgBindPopList*/
+SELECT
+    X.STDY_DTA_MNG_NO
+    ,X.SEA_NM 
+    ,X.LATT_DD
+    ,X.LNGT_DD
+    ,REPLACE(REPLACE(X.FL_UP_FLDR_NM,
+    '[',
+    ''),
+    ']',
+    '') FL_UP_FLDR_NM
+    ,X.IMG_FL_NM 
+    ,X.DPTH_OF_WTER
+    ,X.IMG_WDTH
+    ,X.IMG_HGT
+    ,A.OBJ_NM
+    ,A.BNDBX_X_MIN
+    ,A.BNDBX_Y_MIN
+    ,A.BNDBX_X_MAX
+    ,A.BNDBX_Y_MAX
+FROM
+     TB_AI_STD_DTA_MST X
+    ,TB_AI_STD_RSL_I A
+WHERE
+    X.STDY_DTA_MNG_NO = A.STDY_DTA_MNG_NO
+AND X.STDY_DTA_MNG_NO = #{stdyDtaMngNo}
+AND A.SEQ             = #{seq}
+ORDER BY
+     SEA_NM
+    ,LATT_DD
+    ,LNGT_DD
+    ,OBJ_NM
+</select>
+
+<select id="selectImgMasterKey" resultType="EzMap">
+/*selectImgMasterKey*/
+SELECT 
+<choose>
+    <when test='dtasNm != null and dtasNm.equals("SONAR")'>
+        CONCAT('SNR',LPAD(MAX(SUBSTR(STDY_DTA_MNG_NO,4)+1),7,'0')) AS STDY_DTA_MNG_NO   
+    </when>
+    <when test='dtasNm != null and dtasNm.equals("UNDERWATER")'>
+        CONCAT('UDP',LPAD(MAX(SUBSTR(STDY_DTA_MNG_NO,4)+1),7,'0')) AS STDY_DTA_MNG_NO
+    </when>
+    <otherwise>
+        CONCAT('SNR',LPAD(MAX(SUBSTR(STDY_DTA_MNG_NO,4)+1),7,'0')) AS STDY_DTA_MNG_NO
+    </otherwise>
+</choose>
+FROM TB_AI_STD_DTA_MST 
+WHERE 1=1
+<if test="dtasNm != null and dtasNm != ''">
+AND DTAS_NM = #{dtasNm}
+</if>
+</select>
+
+<insert id="saveImgMasterPopupMList">
+    /*saveImgMasterPopupMList*/
+    INSERT INTO TB_AI_STD_DTA_MST(
+         STDY_DTA_MNG_NO
+        ,IMG_FL_NM        /*저장된 파일명*/
+        ,IMG_FL_NM_REAL   /*실제원본파일명*/
+        ,IMG_WDTH         /*원본 가로*/
+        ,IMG_HGT          /*원본 세로*/
+        ,DTAS_NM          /*촬영기기*/
+        ,SEA_NM           /*해역*/
+        ,LATT_DD          /*위도*/
+        ,LNGT_DD          /*경도*/
+        ,DPTH_OF_WTER     /*수심*/
+        ,RMK /*비고*/
+        ,REG_ID
+        ,REG_DT
+        ,MOD_ID
+        ,MOD_DT
+    )VALUES(
+         #{stdyDtaMngNo}
+        ,#{fileId}  
+        ,#{fileNm}
+        ,#{imgWdth}
+        ,#{imgHgt}
+        ,#{dtasNm}
+        ,#{seaNm}
+        ,#{lattDd}/*위도*/
+        ,#{lngtDd} /*경도*/
+        ,#{dpthOfWter} /*수심*/
+        ,#{rmkHeader} /*비고*/
+        ,#{regId}
+        ,NOW()
+        ,#{modId}
+        ,NOW()
+    )
+</insert>
+
+<update id="updateImgMasterPopupMList">
+    /*updateImgMasterPopupMList*/
+    UPDATE TB_AI_STD_DTA_MST
+    SET  
+         SEA_NM         = #{seaNm} /*해역*/
+        <choose>
+            <when test='fileId != null and !fileId.equals("")'>
+                ,IMG_FL_NM      = #{fileId} /*저장된 파일명*/
+                ,IMG_FL_NM_REAL = #{fileNm} /*실제원본파일명*/
+                ,IMG_WDTH       = #{imgWdth} /*원본 가로*/
+                ,IMG_HGT        = #{imgHgt} /*원본 세로*/
+            </when>
+            <otherwise>
+            </otherwise>
+        </choose>
+        ,DTAS_NM        = #{dtasNm} /*촬영기기*/
+        ,LATT_DD        = #{lattDd} /*위도*/
+        ,LNGT_DD        = #{lngtDd} /*경도*/
+        ,DPTH_OF_WTER   = #{dpthOfWter} /*수심*/
+        ,RMK            = #{rmkHeader} /*비고*/ 
+        ,MOD_ID         = #{modId}
+        ,MOD_DT         = NOW()
+    WHERE STDY_DTA_MNG_NO = #{stdyDtaMngNo}
+</update>
+
+
+<delete id="deleteAllPopupList">
+    /*deleteAllPopupList*/
+    DELETE FROM TB_AI_STD_DTA_MST  WHERE STDY_DTA_MNG_NO = #{stdyDtaMngNo};
+    DELETE  FROM TB_AI_STD_RSL_I  WHERE STDY_DTA_MNG_NO = #{stdyDtaMngNo};
+</delete>
+
+<!-- mdj 끝 -->
+</mapper>
+

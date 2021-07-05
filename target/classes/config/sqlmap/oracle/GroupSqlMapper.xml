@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ezsmart.group">
+<!-- 사용자별 권한 메뉴 가져오기 -->
+    <sql id="sqlPkConditions">
+        WHERE GROUP_ID       =     #{groupId}
+    </sql>
+    <sql id="sqlCols">
+              GROUP_ID
+            , GROUP_NAME
+            , REG_ID
+            , REG_DT
+            , MOD_ID
+            , MOD_DT
+    </sql>
+    <sql id="sqlConditions">
+        FROM TB_GROUP A
+         WHERE 1=1
+        <if test="groupId != null and groupId != ''">
+          AND GROUP_ID = #{groupId}
+        </if>  
+        <if test="groupName != null and groupName != ''">
+          AND GROUP_NAME LIKE '%' || #{groupName} || '%'
+        </if>
+        <if test="userId != null and userId != ''">
+           AND GROUP_ID IN (SELECT GROUP_ID FROM TB_GROUP_USER WHERE USER_ID = #{userId})
+         </if>
+        <if test="exUserId != null and exUserId != ''">
+           AND GROUP_ID NOT IN (SELECT GROUP_ID FROM TB_GROUP_USER WHERE USER_ID = #{exUserId})
+         </if>
+         <if test="menuId != null and menuId != ''">
+           AND GROUP_ID IN (SELECT GROUP_ID FROM TB_GROUP_MENU WHERE MENU_ID = #{menuId})
+         </if>
+         <if test="exMenuId != null and exMenuId != ''">
+           AND GROUP_ID NOT IN (SELECT GROUP_ID FROM TB_GROUP_MENU WHERE MENU_ID = #{exMenuId})
+         </if>
+    </sql>
+    
+    <select id="selectListCount" resultType="int">
+        SELECT COUNT(1) CNT
+        <include refid="sqlConditions" />
+    </select>
+    <select id="selectList" resultType="EzMap">
+        <include refid="ezsmart.inc.pagingHeader"/>
+       SELECT <include refid="sqlCols"/>
+       <include refid="sqlConditions"/>
+       ORDER BY GROUP_ID
+        <include refid="ezsmart.inc.pagingFooter"/>
+    </select>
+    
+    <select id="selectGroupUserCount" resultType="int">
+        SELECT COUNT(1) CNT
+        FROM TB_GROUP A
+            , TB_GROUP_USER B
+            <!-- , TB_USER C -->
+            , TB_USER_M C
+       WHERE A.GROUP_ID = B.GROUP_ID
+         <!-- AND B.USER_ID = C.USER_ID -->
+         AND B.USER_ID = C.EMP_NO
+         <choose>
+            <when test="exGroupId != null and exGroupId != ''">
+         AND A.GROUP_ID != #{exGroupId}
+            </when>
+            <otherwise>
+         AND A.GROUP_ID = #{groupId}
+            </otherwise>
+         </choose> 
+         AND C.DEL_YN = 'N'
+    </select>
+    <select id="selectGroupCheckList" resultType="EzMap">
+        SELECT A.GROUP_ID
+             , A.GROUP_NAME
+             , DECODE( NVL(B.GROUP_ID,C.GROUP_ID),NULL,'N','Y') CHECK_YN
+          FROM TB_GROUP A
+          LEFT JOIN TB_GROUP_USER B ON A.GROUP_ID = B.GROUP_ID AND B.USER_ID = #{userId}
+          LEFT JOIN TB_GROUP_MENU C ON A.GROUP_ID = C.GROUP_ID AND C.MENU_ID = #{menuId}
+    </select>
+    <select id="selectGroupUserList" resultType="EzMap">
+        <include refid="ezsmart.inc.pagingHeader"/>
+       SELECT A.GROUP_ID
+            , C.USER_ID
+            , C.LOGIN_ID
+            <!-- , C.USER_NAME -->
+            , C.USER_NM
+            <!-- , C.USER_EMAIL -->
+            , C.EMAIL
+            , C.MOBILE_NO
+         FROM TB_GROUP A
+            , TB_GROUP_USER B
+            <!-- , TB_USER C -->
+            , TB_USER_M C
+       WHERE A.GROUP_ID = B.GROUP_ID
+         <!-- AND B.USER_ID = C.USER_ID -->
+         AND B.USER_ID = C.EMP_NO
+         <choose>
+            <when test="exGroupId != null and exGroupId != ''">
+         AND A.GROUP_ID != #{exGroupId}
+            </when>
+            <otherwise>
+         AND A.GROUP_ID = #{groupId}
+            </otherwise>
+         </choose> 
+         AND C.DEL_YN = 'N'
+       <!-- ORDER BY C.LOGIN_ID -->
+       ORDER BY C.USER_ID
+        <include refid="ezsmart.inc.pagingFooter"/>
+    </select>
+    <select id="selectGroupMenuCount" resultType="int">
+        SELECT COUNT(1) CNT
+        FROM TB_GROUP A
+            , TB_GROUP_MENU B
+            , TB_MENU C
+        WHERE A.GROUP_ID = B.GROUP_ID
+          AND B.MENU_ID = C.MENU_ID
+         <choose>
+            <when test="exGroupId != null and exGroupId != ''">
+            AND A.GROUP_ID != #{exGroupId}
+            </when>
+            <otherwise>
+            AND A.GROUP_ID = #{groupId}
+            </otherwise>
+         </choose> 
+          AND C.MENU_URL IS NOT NULL
+          AND C.MENU_AUTH_YN = 'Y'
+    </select>
+    <select id="selectGroupMenuList" resultType="EzMap">
+        <include refid="ezsmart.inc.pagingHeader"/>
+       SELECT A.GROUP_ID
+            , C.MENU_ID
+            , C.MENU_NAME
+            , C.MENU_URL
+            , C.ROOT_MENU_ID
+            , B.MENU_AUTH_C
+            , B.MENU_AUTH_R
+            , B.MENU_AUTH_U
+            , B.MENU_AUTH_D
+         FROM TB_GROUP A
+            , TB_GROUP_MENU B
+            , TB_MENU C
+        WHERE A.GROUP_ID = B.GROUP_ID
+          AND B.MENU_ID = C.MENU_ID
+          <choose>
+            <when test="exGroupId != null and exGroupId != ''">
+          AND A.GROUP_ID != #{exGroupId}
+            </when>
+            <otherwise>
+          AND A.GROUP_ID = #{groupId}
+            </otherwise>
+         </choose> 
+          AND C.MENU_URL IS NOT NULL
+          AND C.MENU_AUTH_YN = 'Y'
+        ORDER BY C.MENU_ID
+          
+        <include refid="ezsmart.inc.pagingFooter"/>
+    </select>
+    <select id="selectGroup" resultType="EzMap">
+        SELECT <include refid="sqlCols" />
+       FROM TB_GROUP
+      <include refid="sqlPkConditions" />
+    </select>
+    <update id="updateGroup">
+       UPDATE TB_GROUP
+         SET  GROUP_NAME            =         #{groupName}
+            , MOD_ID               =         #{modId}
+            , MOD_DT               =         SYSDATE
+         <include refid="sqlPkConditions" />
+    </update>
+    
+    <insert id="insertGroup">
+        INSERT INTO TB_GROUP (
+               <include refid="sqlCols"/>
+         ) VALUES (
+               #{groupId}
+             , #{groupName}
+             , #{modId}
+             , SYSDATE
+             , #{regId}
+             , SYSDATE
+         )
+    </insert>
+    <insert id="insertGroupMenu">
+        INSERT INTO TB_GROUP_MENU (
+               GROUP_ID
+             , MENU_ID
+             , MENU_AUTH_C
+             , MENU_AUTH_R
+             , MENU_AUTH_U
+             , MENU_AUTH_D
+             , REG_ID
+             , REG_DT
+             , MOD_ID
+             , MOD_DT 
+         ) VALUES (
+               #{groupId}
+             , #{menuId}
+             , NVL(#{menuAuthC},'Y')
+             , NVL(#{menuAuthR},'Y')
+             , NVL(#{menuAuthU},'Y')
+             , NVL(#{menuAuthD},'Y')
+             , #{modId}
+             , SYSDATE
+             , #{regId}
+             , SYSDATE
+         )
+    </insert>
+    <update id="updateGroupMenu">
+       UPDATE TB_GROUP_MENU
+         SET   MENU_AUTH_C          =         #{menuAuthC}
+             , MENU_AUTH_R          =         #{menuAuthR}
+             , MENU_AUTH_U          =         #{menuAuthU}
+             , MENU_AUTH_D          =         #{menuAuthD}
+             , MOD_ID               =         #{modId}
+             , MOD_DT               =         SYSDATE
+         WHERE GROUP_ID             =         #{groupId}
+           AND MENU_ID              =         #{menuId}
+    </update>
+    <insert id="insertGroupUser">
+        INSERT INTO TB_GROUP_USER (
+               GROUP_ID
+             , USER_ID
+             , REG_ID
+             , REG_DT
+             , MOD_ID
+             , MOD_DT 
+         ) VALUES (
+               #{groupId}
+             , #{userId}
+             , #{modId}
+             , SYSDATE
+             , #{regId}
+             , SYSDATE
+         )
+    </insert>
+    <delete id="deleteGroup">
+       DELETE TB_GROUP
+       <include refid="sqlPkConditions" />
+    </delete>
+    <delete id="deleteGroupMenu">
+       DELETE TB_GROUP_MENU
+        WHERE 1=1
+        <choose>
+            <when test="groupId != null and groupId != ''">
+         AND GROUP_ID = #{groupId} 
+            </when>
+            <otherwise>
+         AND MENU_ID = #{menuId} 
+            </otherwise>
+        </choose>
+        <if test="menuId != null and menuId != ''">
+         AND MENU_ID = #{menuId} 
+        </if>
+        <if test="groupId != null and groupId != ''">
+         AND GROUP_ID = #{groupId} 
+        </if>
+    </delete>
+    <delete id="deleteGroupUser">
+       DELETE TB_GROUP_USER
+        WHERE 1=1
+        <choose>
+            <when test="groupId != null and groupId != ''">
+         AND GROUP_ID = #{groupId} 
+            </when>
+            <otherwise>
+         AND USER_ID = #{userId} 
+            </otherwise>
+        </choose>
+        <if test="userId != null and userId != ''">
+         AND USER_ID = #{userId} 
+        </if>
+        <if test="groupId != null and groupId != ''">
+         AND GROUP_ID = #{groupId} 
+        </if>
+    </delete>
+</mapper>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ezsmart.batch">
+
+    <select id="selectListCount" resultType="int">
+        /* BatchSqlMapper - selectListCount */
+        SELECT COUNT(1)
+          FROM ZZ_BATCH_M
+         WHERE 1 = 1
+         <if test="batId != null and batId != ''">
+           AND BAT_ID       =   #{batId}
+         </if>
+         <if test="batNm != null and batNm != ''">
+           AND BAT_NM       =   #{batNm}
+         </if>
+         <if test="batObjName != null and batObjName != ''">
+           AND BAT_OBJ_NM   =   #{batObjNm}
+         </if>
+         <if test="batDesc != null and batDesc != ''">
+           AND BAT_DESC     =   #{batDesc}
+         </if>
+         <if test="batCron != null and batCron != ''">
+           AND BAT_CRON     =   #{batCron}
+         </if>
+         <if test="batObjType != null and batObjType != ''">
+           AND BAT_OBJ_TYPE =   #{batObjType}
+         </if>
+         <if test="useYn != null and useYn != ''">
+           AND USE_YN       =   #{useYn}
+         </if>
+    </select>
+    
+    <select id="selectList" resultType="EzMap">
+        /* BatchSqlMapper - selectList */
+        SELECT BAT_ID
+             , BAT_NM
+             , BAT_OBJ_NM
+             , BAT_DESC
+             , BAT_CRON
+             , BAT_OBJ_TYPE
+             , USE_YN
+             , REG_ID
+             , REG_DT
+             , MOD_ID
+             , MOD_DT
+          FROM ZZ_BATCH_M
+         WHERE 1 = 1
+         <if test="batId != null and batId != ''">
+           AND BAT_ID       =   #{batId}
+         </if>
+         <if test="batNm != null and batNm != ''">
+           AND BAT_NM       =   #{batNm}
+         </if>
+        ORDER BY REG_DT DESC
+    </select>
+    
+    <select id="selectBatch" resultType="EzMap">
+        /* BatchSqlMapper - selectBatch */
+        SELECT BAT_ID
+             , BAT_NM
+             , BAT_OBJ_NM
+             , BAT_DESC
+             , BAT_CRON
+             , BAT_OBJ_TYPE
+             , USE_YN
+             , REG_ID
+             , REG_DT
+             , MOD_ID
+             , MOD_DT
+          FROM ZZ_BATCH_M
+         WHERE BAT_ID = #{batId}
+    </select>
+</mapper>

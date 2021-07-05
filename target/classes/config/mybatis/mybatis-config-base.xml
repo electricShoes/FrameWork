@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+	PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<settings>
+		<!-- <setting name="cacheEnabled" value="true"/> default value -->
+		<!-- <setting name="cacheEnabled" value="false"/> -->
+		<setting name="lazyLoadingEnabled" value="false"/>
+		<!-- <setting name="multipleResultSetsEnabled" value="true"/> default value -->
+		<!-- <setting name="useColumnLabel" value="true"/> default value -->
+		<!-- <setting name="useGeneratedKeys" value="false"/> default value -->
+		<!-- <setting name="defaultExecutorType" value="SIMPLE"/> default value -->
+		<setting name="defaultStatementTimeout" value="25000"/>
+		<setting name="mapUnderscoreToCamelCase" value="true"/>
+		<setting name="localCacheScope" value="STATEMENT"/>
+		<setting name="jdbcTypeForNull" value="CHAR"/>
+	</settings>
+
+	<!--? java.sql.Timestamp 를 java.util.Date 형으로 반환 -->
+	 
+        
+	<typeAliases>
+        <typeAlias type="cspi.ezsmart.common.model.EzMap" alias="EzMap"/>
+        <typeAlias type="cspi.ezsmart.common.model.EzTreeMap" alias="EzTreeMap"/>
+        <typeAlias type="cspi.ezsmart.common.model.EzMenuMap" alias="EzMenuMap"/>
+    </typeAliases>
+    
+    <typeHandlers>
+        <typeHandler handler="cspi.ezsmart.common.util.EzClobHandler" javaType="String" jdbcType="LONGVARCHAR"/>
+        <typeHandler handler="cspi.ezsmart.common.util.EzClobHandler" javaType="String" jdbcType="CLOB"/>
+        <typeHandler handler="cspi.ezsmart.common.util.EzClobHandler" javaType="String" jdbcType="NCLOB"/>
+    </typeHandlers>
+    
+    <!-- MyBatis 실행쿼리 Logging ..... 박종영
+    <plugins>
+        <plugin interceptor="cspi.ezsmart.common.util.mybatis.MybatisLogInterceptor"/>
+    </plugins>
+     -->
+</configuration>

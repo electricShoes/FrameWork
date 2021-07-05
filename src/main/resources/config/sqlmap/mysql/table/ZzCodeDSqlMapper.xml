@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ezsmart.code.ZzCodeD">
+
+<!--
+ * 시스템명 : 테스트 프로젝트
+ * 생 성 자 : 안형기
+ * 생 성 일 : 2020-11-12
+ -->
+
+<!-- Row Count를 반환합니다. -->
+<select id="getRowCount" resultType="int">
+SELECT COUNT(1) CNT 
+  FROM ZZ_CODE_D A                   /* 공통코드상세 */
+ WHERE 1 = 1
+</select>
+
+<!-- 한건을 기준으로 select를 실행합니다. -->
+<select id="selectList" resultType="EzMap">
+SELECT 
+       A.CMPY_CD                                  /* 회사코드 */
+     , A.MST_CD                                   /* 마스터코드 */
+     , A.DTL_CD                                   /* 상세코드 */
+     , A.DTL_NM                                   /* 상세코드명 */
+     , A.USE_YN                                   /* 사용여부 */
+     , A.REF_CD1                                  /* 참조코드1 */
+     , A.REF_CD2                                  /* 참조코드2 */
+     , A.REF_CD3                                  /* 참조코드3 */
+     , A.REF_CD4                                  /* 참조코드4 */
+     , A.REF_CD5                                  /* 참조코드5 */
+     , A.REF_NUM1                                 /* 참조숫자1 */
+     , A.REF_NUM2                                 /* 참조숫자2 */
+     , A.REF_NUM3                                 /* 참조숫자3 */
+     , A.REF_NUM4                                 /* 참조숫자4 */
+     , A.REF_NUM5                                 /* 참조숫자5 */
+     , A.SORT_SEQ                                 /* 정렬순번 */
+     , A.REG_ID                                   /* 등록자아이디 */
+     , A.REG_DT                                   /* 등록일 */
+     , A.MOD_ID                                   /* 수정자아이디 */
+     , A.MOD_DT                                   /* 수정일 */
+  FROM ZZ_CODE_D A                   /* 공통코드상세 */
+ WHERE 1=1
+   <if test="mstCd != null and mstCd != ''">
+   AND A.MST_CD = #{mstCd}
+   </if>  
+   <if test="dtlCd != null and dtlCd != ''">
+   AND A.DTL_CD = #{dtlCd}
+   </if>   
+</select>
+
+<!-- 한건을 기준으로 insert를 실행합니다. -->
+<insert id="insert">
+INSERT INTO ZZ_CODE_D (                           /* 공통코드상세 */
+       CMPY_CD                                    /* 회사코드 */
+     , MST_CD                                     /* 마스터코드 */
+     , DTL_CD                                     /* 상세코드 */
+     , DTL_NM                                     /* 상세코드명 */
+     , USE_YN                                     /* 사용여부 */
+     , REF_CD1                                    /* 참조코드1 */
+     , REF_CD2                                    /* 참조코드2 */
+     , REF_CD3                                    /* 참조코드3 */
+     , REF_CD4                                    /* 참조코드4 */
+     , REF_CD5                                    /* 참조코드5 */
+     , REF_NUM1                                   /* 참조숫자1 */
+     , REF_NUM2                                   /* 참조숫자2 */
+     , REF_NUM3                                   /* 참조숫자3 */
+     , REF_NUM4                                   /* 참조숫자4 */
+     , REF_NUM5                                   /* 참조숫자5 */
+     , SORT_SEQ                                   /* 정렬순번 */
+     , REG_ID                                     /* 등록자아이디 */
+     , REG_DT                                     /* 등록일 */
+     , MOD_ID                                     /* 수정자아이디 */
+     , MOD_DT                                     /* 수정일 */
+) VALUES (
+       '0000'
+     , #{mstCd}
+     , #{dtlCd}
+     , #{dtlNm}
+     , #{useYn}
+     , #{refCd1}
+     , #{refCd2}
+     , #{refCd3}
+     , #{refCd4}
+     , #{refCd5}
+     , #{refNum1}
+     , #{refNum2}
+     , #{refNum3}
+     , #{refNum4}
+     , #{refNum5}
+     , #{sortSeq}
+     , #{regId}
+     , NOW()
+     , #{modId}
+     , NOW()
+)
+</insert>
+
+<!-- 한건을 기준으로 update를 실행합니다. -->
+<update id="update">
+UPDATE ZZ_CODE_D SET                              /* 공통코드상세 */
+       DTL_NM = #{dtlNm}                          /* 상세코드명 */
+     , USE_YN = #{useYn}                          /* 사용여부 */
+     , REF_CD1 = #{refCd1}                        /* 참조코드1 */
+     , REF_CD2 = #{refCd2}                        /* 참조코드2 */
+     , REF_CD3 = #{refCd3}                        /* 참조코드3 */
+     , REF_CD4 = #{refCd4}                        /* 참조코드4 */
+     , REF_CD5 = #{refCd5}                        /* 참조코드5 */
+     , REF_NUM1 = #{refNum1}                      /* 참조숫자1 */
+     , REF_NUM2 = #{refNum2}                      /* 참조숫자2 */
+     , REF_NUM3 = #{refNum3}                      /* 참조숫자3 */
+     , REF_NUM4 = #{refNum4}                      /* 참조숫자4 */
+     , REF_NUM5 = #{refNum5}                      /* 참조숫자5 */
+     , SORT_SEQ = #{sortSeq}                      /* 정렬순번 */
+     , MOD_ID = #{modId}                          /* 수정자아이디 */
+     , MOD_DT = NOW()                         /* 수정일 */
+ WHERE MST_CD = #{mstCd}
+   AND DTL_CD = #{dtlCd}
+</update>
+
+<!-- 한건을 기준으로 delete를 실행합니다. -->
+<delete id="delete">
+DELETE FROM   ZZ_CODE_D                           /* 공통코드상세 */
+ WHERE MST_CD = #{mstCd}
+   AND DTL_CD = #{dtlCd}
+</delete>
+
+<select id="selectCodeCombo" resultType="EzMap">
+SELECT /*selectCodeCombo*/
+       A.DTL_CD
+     , A.DTL_NM  
+  FROM ZZ_CODE_D A                   /* 공통코드상세 */
+ WHERE A.MST_CD = #{mstCd}
+ ORDER BY SORT_SEQ
+</select>
+
+
+<select id="selectDCodeList"  parameterType="EzMap" resultType="EzMap">
+    /* selectRestDCodeList - select */
+        SELECT 
+            A.CMPY_CD
+            ,A.MST_CD AS PCOE
+            ,A.DTL_CD AS CODE
+            ,A.DTL_NM AS NAME
+            ,A.USE_YN
+            ,A.REF_CD1
+            ,A.REF_CD2
+            ,A.REF_CD3
+            ,A.REF_CD4
+            ,A.REF_CD5
+            ,A.REF_NUM1
+            ,A.REF_NUM2
+            ,A.REF_NUM3
+            ,A.REF_NUM4
+            ,A.REF_NUM5
+            ,A.SORT_SEQ
+            ,A.REG_ID
+            ,A.REG_DT
+            ,A.MOD_ID
+            ,A.MOD_DT
+        FROM ZZ_CODE_D A
+        WHERE 1=1
+        <if test="cmpyCd !=null and cmpyCd !=''">
+        AND A.CMPY_CD = #{cmpyCd}
+        </if>
+        <if test="mstCd !=null and mstCd !=''">
+        AND A.MST_CD = #{mstCd}
+        </if>
+        <if test="refCd1 !=null and refCd1 !=''">
+        AND A.REF_CD1 = #{refCd1}
+        </if>
+        AND A.USE_YN='Y'
+    </select>
+
+
+    <select id="selectSeaCode" parameterType="EzMap" resultType="EzMap">
+      /* selectselectSeaCode - select */
+      SELECT DTL_CD
+      FROM ZZ_CODE_D 
+      WHERE DTL_CD IN (
+                       SELECT REF_CD1 
+                       FROM ZZ_CODE_D 
+                       WHERE DTL_CD = #{dtlCd}
+                      )
+      AND MST_CD='SEA_CD'
+    </select>
+
+</mapper>
+

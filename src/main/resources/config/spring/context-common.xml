@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:tx="http://www.springframework.org/schema/tx" xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:task="http://www.springframework.org/schema/task" xmlns:websocket="http://www.springframework.org/schema/websocket"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd        
+			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd        
+			http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd    
+			http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd 
+        	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+			http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd
+			http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.0.xsd
+			http://www.springframework.org/schema/websocket http://www.springframework.org/schema/websocket/spring-websocket.xsd">	
+     
+    <context:component-scan base-package="cspi, api" />
+    <!--   
+	<context:component-scan base-package="cspi" >
+	    <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	    <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+    	<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+    </context:component-scan>
+	 -->
+	 
+     <!-- <context:component-scan base-package="egovframework, cspi"> -->
+    <!-- <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/> -->
+    <!-- <context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/> -->
+    <!-- <context:include-filter-filter type="annotation" expression="org.springframework.stereotype.Repository"/> -->
+    <!-- </context:component-scan> -->
+    
+     
+    <bean id="defaultDateFormat" class="java.text.SimpleDateFormat">
+        <constructor-arg value="yyyy-MM-dd" />
+    </bean>
+    <bean id="jacksonObjectMapper" class="com.fasterxml.jackson.databind.ObjectMapper">
+        <property name="dateFormat" ref="defaultDateFormat" />
+    </bean>
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+
+        <property name="basenames">
+            <list>
+                <value>classpath:/config/message/message-common</value>
+                <value>classpath:/config/message/message-label</value>
+                <value>classpath:/egovframework/rte/fdl/idgnr/messages/idgnr</value>
+                <value>classpath:/egovframework/rte/fdl/property/messages/properties</value>
+            </list>
+        </property>
+        <property name="defaultEncoding">
+            <value>UTF-8</value>
+        </property>
+        <property name="cacheSeconds">
+            <value>60</value>
+        </property>
+    </bean>
+    
+    <!-- 객체 매핑시 객체에 없는 항목시 에러 나지 않게 설정 -->
+    <bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="targetObject" ref="jacksonObjectMapper" />
+        <property name="targetMethod" value="configure" />
+        <property name="arguments">
+            <list>
+                <value type="com.fasterxml.jackson.databind.DeserializationFeature">FAIL_ON_UNKNOWN_PROPERTIES</value>
+                <value>false</value>
+            </list>
+        </property>
+    </bean>
+    
+    <!-- 객체 매핑시 객체에 없는 항목시 에러 나지 않게 설정 -->
+    <!-- <mvc:annotation-driven validator="validator"> -->
+    <mvc:annotation-driven>
+        <!-- @RequestBody의  -->
+        <mvc:message-converters>
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">	<!-- For Jackson 2.x -->
+                <property name="supportedMediaTypes">
+                    <list>
+                        <value>application/json;charset=UTF-8</value>
+                        <value>text/plain;charset=UTF-8</value>
+                    </list>
+                </property>
+                <property name="objectMapper" ref="jacksonObjectMapper" />
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+    
+    <!-- file (multiple) upload를 사용하기 위한 설정 시작 (다중 파일 업로드 가능) -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="10737418240" />
+        <property name="maxInMemorySize" value="100000000" />
+    </bean>
+    <!--// file (multiple) upload를 사용하기 위한 설정 끝 (다중 파일 업로드 가능) -->
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
+        <property name="defaultLocale" value="ko" />
+    </bean>
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**/*.do" />
+            <!-- 캐시 사용 금지 -->
+            <bean id="webContentInterceptor" class="org.springframework.web.servlet.mvc.WebContentInterceptor">
+                <property name="cacheSeconds" value="0" />
+                <!-- <property name="useExpiresHeader" value="true" /> -->
+                <!-- <property name="useCacheControlHeader" value="true" /> -->
+                <!-- <property name="useCacheControlNoStore" value="true" /> -->
+            </bean>
+        </mvc:interceptor>
+        <mvc:interceptor>
+            <mvc:mapping path="/*" />
+
+            <bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+                <property name="paramName" value="language" />
+            </bean>
+        </mvc:interceptor>
+<!-- 	                
+        <mvc:interceptor>
+            <mvc:mapping path="/api/*" />
+            <bean id="restApiIntercepter" class="cspi.rest.api.RestApiIntercepter">
+            </bean>
+        </mvc:interceptor>
+-->           
+        <mvc:interceptor>
+            <mvc:mapping path="/**/*.do" />
+            <bean class="cspi.ezsmart.common.interceptor.MenuInterceptor" />
+        </mvc:interceptor>
+
+        <mvc:interceptor>
+            <mvc:mapping path="/**/*.do" />
+            <bean class="cspi.ezsmart.common.interceptor.AuthCheckInterceptor">
+                <!-- interceptor를 적용하지 않을 url pattern 목록 -->
+              <property name="excludeUrlPattern">
+                    <list>
+                        <value>/error/*.do</value>
+                        <value>/login/*.do</value>
+                        <value>/sso/*.do</value>
+                        <value>/main/*.do</value>
+                        <value>/api/*</value>
+                    </list>
+                </property>
+            </bean>
+        </mvc:interceptor>
+    </mvc:interceptors>
+    <bean id="leaveaTrace" class="egovframework.rte.fdl.cmmn.trace.LeaveaTrace">
+        <property name="traceHandlerServices">
+            <list>
+                <ref bean="traceHandlerService" />
+            </list>
+        </property>
+    </bean>
+    <bean id="traceHandlerService" class="egovframework.rte.fdl.cmmn.trace.manager.DefaultTraceHandleManager">
+        <property name="reqExpMatcher">
+            <ref bean="antPathMater" />
+        </property>
+        <property name="patterns">
+            <list>
+                <value>*</value>
+            </list>
+        </property>
+        <property name="handlers">
+            <list>
+                <ref bean="defaultTraceHandler" />
+            </list>
+        </property>
+    </bean>
+    
+    <bean id="antPathMater" class="org.springframework.util.AntPathMatcher" />
+    <bean id="defaultTraceHandler" class="egovframework.rte.fdl.cmmn.trace.handler.DefaultTraceHandler" />
+    
+    <!-- 배치사용시 -->
+    <task:annotation-driven executor="batchExecuter" scheduler="batchScheduler" />
+    <task:executor id="batchExecuter" pool-size="20" />
+    <task:scheduler id="batchScheduler" />
+    
+    
+</beans>

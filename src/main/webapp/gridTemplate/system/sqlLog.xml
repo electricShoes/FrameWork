@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<grid>
+    <meta>
+        <deletable value="N"/>
+        <rollbackable value="N"/>
+        <appendable value="N"/>
+        <readOnly value="N"/>
+        <showCheckbox value="Y"/>
+        <showNumber value="Y"/>
+        <showStateBar value="N"/>
+        <showHeaderSum value="N"/>
+        <showFooter value="N"/>
+        <insertable value="N"/>
+        <editable value="N"/>
+        <rowSelection value="N"/>
+        <gridfitStyle value="even"/>
+        <columnMove value="N"/>
+        <setSort value="none"/>
+    </meta>
+    <column name="로그아이디" field="logId" type="char" maxLength="30" width="80" textAlignment="left" required="Y" Pk="Y" readOnly="Y" hidden="Y"/>
+    <column name="실행  SQL" field="logSql" type="char" width="200" textAlignment="left" required="Y" hidden="N"/>
+    <column name="사용자" field="userId" type="char" maxLength="10" width="80" textAlignment="left" required="Y" hidden="N"/>
+    <column name="시작시간" field="strDt" type="datetime" maxLength="17" width="80" textAlignment="left" required="Y" hidden="N"/>
+    <column name="종료시간" field="endDt" type="datetime" maxLength="17" width="80" textAlignment="left" required="Y" hidden="N"/>
+    <column name="실행시간(ms)" field="execTime" type="int" maxLength="10" width="80" textAlignment="right" required="Y" digit="10" place="0" hidden="N"/>
+    <column name="메뉴아이디" field="menuId" type="char" maxLength="20" width="80" textAlignment="left" required="N" hidden="N"/>
+    <column name="메뉴" field="menuNm" type="char" maxLength="100" width="80" textAlignment="left" required="N" hidden="N"/>
+    <column name="함수명" field="daoMethod" type="char" maxLength="1000" width="80" textAlignment="left" required="Y" hidden="N"/>
+</grid>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ezsmart.batch">
+    <sql id="sqlPkConditions">
+                WHERE BAT_ID            =       #{batId}
+    </sql>
+    <sql id="sqlCols">
+                      BAT_ID
+                    , BAT_NAME
+                    , BAT_OBJ_NAME
+                    , BAT_DESC
+                    , BAT_CRON
+                    , BAT_OBJ_TYPE
+                    , USE_YN
+                    , REG_ID
+                    , REG_DT
+                    , MOD_ID
+                    , MOD_DT
+    </sql>
+    <sql id="sqlConditions">
+                 FROM TB_BATCH
+                WHERE 1 = 1
+        <if test="batId != null and batId != ''">
+                      AND BAT_ID            =       #{batId}
+        </if>
+        <if test="batName != null and batName != ''">
+                      AND BAT_NAME          =       #{batName}
+        </if>
+        <if test="batObjName != null and batObjName != ''">
+                      AND BAT_OBJ_NAME      =       #{batObjName}
+        </if>
+        <if test="batDesc != null and batDesc != ''">
+                      AND BAT_DESC          =       #{batDesc}
+        </if>
+        <if test="batCron != null and batCron != ''">
+                      AND BAT_CRON          =       #{batCron}
+        </if>
+        <if test="batObjType != null and batObjType != ''">
+                      AND BAT_OBJ_TYPE      =       #{batObjType}
+        </if>
+        <if test="useYn != null and useYn != ''">
+                      AND USE_YN            =       #{useYn}
+        </if>
+    </sql>
+    <select id="selectListCount" resultType="int">
+                SELECT COUNT(1)
+        <include refid="sqlConditions"/>
+    </select>
+    <select id="selectList" resultType="EzMap">
+        <include refid="ezsmart.inc.pagingHeader"/>
+               SELECT <include refid="sqlCols"/>
+        <include refid="sqlConditions"/>
+               ORDER BY REG_DT DESC
+        <include refid="ezsmart.inc.pagingFooter"/>
+    </select>
+    <select id="selectBatch" resultType="EzMap">
+               SELECT <include refid="sqlCols"/>
+                 FROM TB_BATCH
+        <include refid="sqlPkConditions"/>
+    </select>
+    <insert id="insertBatch">
+                INSERT INTO TB_BATCH (
+        <include refid="sqlCols"/>
+                 ) VALUES (
+                       #{batId}
+                     , #{batName}
+                     , #{batObjName}
+                     , #{batDesc}
+                     , #{batCron}
+                     , #{batObjType}
+                     , #{useYn}
+                     , #{regId}
+                     , SYSDATE
+                     , #{modId}
+                     , SYSDATE
+                 )
+    </insert>
+    <update id="updateBatch">
+               UPDATE TB_BATCH
+                  SET BAT_NAME            =         #{batName}
+                    , BAT_OBJ_NAME        =         #{batObjName}
+                    , BAT_DESC            =         #{batDesc}
+                    , BAT_CRON            =         #{batCron}
+                    , BAT_OBJ_TYPE        =         #{batObjType}
+                    , USE_YN              =         #{useYn}
+                    , MOD_ID              =         #{modId}
+                    , MOD_DT              =         SYSDATE
+        <include refid="sqlPkConditions"/>
+    </update>
+    <delete id="deleteBatch">
+               DELETE FROM TB_BATCH
+        <include refid="sqlPkConditions"/>
+    </delete>
+</mapper>

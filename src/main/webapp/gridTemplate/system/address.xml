@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<grid>
+    <meta>
+        <deletable value="N"/>
+        <rollbackable value="N"/>
+        <appendable value="N"/>
+        <readOnly value="Y"/>
+        <showCheckbox value="R"/>
+        <showNumber value="Y"/>
+        <showStateBar value="N"/>
+        <showHeaderSum value="N"/>
+        <showFooter value="N"/>
+        <insertable value="N"/>
+        <editable value="Y"/>
+        <rowSelection value="N"/>
+        <gridfitStyle value="even"/>
+        <columnMove value="N"/>
+        <setSort value="none"/>
+    </meta>
+    <!-- textAlignment : near:기본(좌측정렬), center:중앙정렬, far:우측정렬  -->
+    <!-- <column field='compxCd' name='단지코드' type='char' width='100'/> -->
+    <group name="주소명"  direction="V" title="">
+        <column name="도로명 주소" field="roadAddr" type="char" maxLength="1000" width="80" textAlignment="left" required="Y" readOnly="Y" hidden="N"/>
+        <column name="지번 주소"   field="jibunAddr" type="char" maxLength="1000" width="80" textAlignment="left" required="Y" hidden="N"/>
+   </group>
+</grid>

@@ -1,0 +1,146 @@
+@charset "utf-8";
+@import url("../css/font.css");
+
+.main_body{ min-width: 1880px !important; max-width: none !important;}
+body {font-family: 'Noto Sans KR', 'Nanum Barun Gothic', sans-serif !important ;font-size: 16px;color: #444444;word-break: keep-all;  width: 100%; 
+height: 100vh}
+.tab_iframe{ min-height: calc(100vh  - 115px) !important; background-color: #fff }
+h1, h2, h3, h4, h5, h6 {line-height: 150%}
+
+a, a:visited{color: #555}
+.b{border: 1px solid red}
+.line_top{ border-top: 1px solid  #c2cee1; padding: 15px 0}
+.line{ border-bottom: 1px solid  #c2cee1; padding: 15px 0}
+.font_blue{color: #106eea;}
+.font18{ font-size: 18px}
+.row{padding: 0  margin: 0 }
+
+/*form*/
+input{ line-height: normal;}
+input[type="checkbox"],input[type="radio"]{ -webkit-box-sizing: border-box;   -moz-box-sizing: border-box;   box-sizing: border-box;padding: 0;}
+input[type="radio"],input[type="checkbox"]{ margin: 0;margin-top: 1px ;line-height: normal;}
+/*input[type="file"]{ display: block;}*/
+input{ border: 1px solid #ccc; padding: 3px 8px ;   border-radius:5px; color: #666; height: 26px;  line-height: 1 !important;  }
+
+input::-moz-placeholder{ color: #999;opacity: 1;line-height: 1 !important; }
+input::-ms-input-placeholder{ color: #999;line-height: 1 !important; }
+input::-webkit-input-placeholder{ color: #999;line-height: 1 !important; }
+input[type="radio"],input[type="checkbox"]{ vertical-align: middle !important;}
+
+
+.main-header { box-shadow: 0; border-bottom: 1px solid #ddd;}     
+.navbar{ padding: 0; }
+.navbar-nav{margin: 0; }
+.navbar-nav .nav-item{ border-right: 1px solid #eee ; padding: 0;transition: all 0.2s; }
+.navbar-nav .nav-item a{height: 37px; box-shadow: 0 !important; font-weight: 600; font-size: 16px;z-index: 997; padding:  8px 10px  ;   }
+.navbar-nav .nav-item a:hover, .navbar-nav .nav-item a:focus,.navbar-nav .nav-item a.active{ border-bottom: 3px solid  #e0002a;color: #e0002a}
+#header.header-scrolled {top: 0;padding:  10px;}
+
+.bggray { background-color:#f2f2f2 !important;border-right: 1px solid #d1d1d1; overflow-x: hidden;}
+.brand-link{   background-size: contain; background-position: right; display: flex;flex-direction: column; background;}
+.brand-link .brand-image{ width:100px;  }
+.brand-link .brand-text{ font-family: 'Noto Sans KR'; font-size: 40px; font-weight: bold; color: #333;  padding: 0 0 0 10px;margin: 0;letter-spacing: -1px; line-height: 100% ; font-weight: 800}
+
+/*leftmenu*/
+.nav >ul { margin: 0 ; padding: 0; border: 0 !important}
+.nav >.nav-item{ padding: 0 !important;  margin-bottom: 0;}
+.nav >.nav-item:first-child{ margin-top: 0 }
+.nav >.nav-item >.nav-link{ border: 1px solid #ccc;border-radius: 4px; padding: 4px 10px;}
+.nav >.nav-item >.nav-link:last-child{ margin-bottom: 1px;border: 1px solid #ccc;}
+.nav >.nav-item >.far{ color:#999 !important }
+.nav >.nav-item >.nav-link:hover{ color:  #e0002a;}
+.nav >.nav-item >.nav-link:focus{color: #222; background-color:  #ddd; }
+
+.nav >.nav-item2 {line-height: 100%;}
+.nav >.nav-item2 i{ color: #999  !important;font-size: 8px;padding-right: 0 ;margin-right: 0 }
+.nav-item2 > .active{padding: 7px 10px;background:   #e0002a !important; color:  #fff; border-color: #e0002a !important;border-radius: 4px;}
+.nav-item2 >.active i { color: #fff !important; font-size: 10px;}
+.nav .nav-treeview .nav-item2 { padding: 0 ;margin: 0 !important;  }
+
+.content-wrapper{background:#fff; margin-top: 0}
+.content-header h1 {font-size: 1.2rem;margin: 0; color: #555 !important}
+.main-footer{font-size: 13px; padding: 8px 20px !important }
+.card{box-shadow: none;}
+.card > .card-header  {border: 0; padding-left: 0;padding-bottom: 4px;padding-top: 0;}
+.card > .card-header > .card-title{  font-size: 15px !important;color: #e0002a;  }/*서브타이틀*/
+.card > .card-header > .card-title:before{ content: "፨";  color: red; padding-right: 4px;  font-size: 15px !important; }
+.card-header > .card-tools{ margin-right: -19px; }
+.card-body {padding:  0 ; }
+
+.card-body>#frmSearch{background:#f9f1e9;border: 1px solid #e5dad5;padding:  0 ; margin: 0  } /*상당검색조건*/
+.card-body>#frmSearch .row{ padding: 2px  !important; margin: 0 !important;}
+.card-body label{ font-size: 14px !important; align-self:center }
+.col-form-label {    padding-top: 0;    padding-bottom: 0;    margin-bottom: 0;    font-size: inherit;}
+.card-primary.card-outline {border-top: 0 solid #007bff;}
+
+ form{padding: 0 !important; margin: 0 !important}
+.form-control { display: block; width: 100%; height: 30px; padding: 5px 10px; font-size: 0.9rem; font-weight: 400; line-height: 1;  background-color: #ffffff;background-clip: padding-box; border: 1px solid #ddd; border-radius: 0; border-radius: 0;box-shadow: inset 0 0 0 rgba(0, 0, 0, 0);transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; margin: 0; }
+.form-control:focus {color: #495057;background-color: #ffffff;border-color: #666;   outline: 0;box-shadow: inset 0 0 0 rgba(0, 0, 0, 0), none;}
+
+.btn { padding: 3px 12px !important;background-color: #f8f9fa;border-color: #CCC;color: #444; font-size: 14px; align-items: center !important;align-self: center !important}
+.btn:hover, .btn:active{ background-color: #e9ecef;color: #2b2b2b; }
+.btn-group > .btn > i{  font-size: 13px; color:#999;  display: none}
+.searh_group{  display: flex;  justify-content: flex-end;margin-bottom: 5px}
+.searh_group>.btn-group>.btn{border:1px solid  #e0002a  !important; background-color: #fff; color: #e0002a }
+.btn-primary{ background: #e0002a ;border:1px solid  #e0002a; color: #fff; margin-left: 5px }
+.btn-primary:hover{color: #fff; background: #ef800a;border:1px solid #bd7a38;  }
+.btn-primary i{color: #fff ; font-size: 13px; padding-right: 5px  }
+
+
+.card-body>div{background:#eee; border: 1px solid #ccc; font-size: 13px; padding: 0; margin-top: 3px}  /*리얼그리드 하단*/
+.gridview_pagination {    margin: 0; padding: 0}
+.rg-header, .rg-header-group-cell {  background:#f2f2f2; }
+
+/*tab*/
+.tab-content body{ min-width: 1000px !important}
+.content-header{border-top: 0 solid #ccc ; margin: 0; padding:  0 7.5px; }/*tab 공간 padding*/
+.page-tabs-content{padding: 9px 8px 3px 8px; margin-top: 0}
+.page-tabs-content .active{ background-color: #e0002a ;color: #fff;border: 1px solid #e0002a; }
+.page-tabs-content .active i{ color:#fff !important}
+.page-tabs-content a{border: 1px solid #ddd; padding:  4px 28px 2px 14px; position: relative;color: #555}
+.page-tabs-content a:before{color: #555}
+.page-tabs-content a:hover,  .page-tabs-content a:focus{background: #e0002a ; color: #fff !important;border: 1px solid #e0002a; }
+.page-tabs-content a > .page_tab_close{  height: 18px; width: 25px; padding: 5px;position: absolute;right: 0;top:0;color: #ccc }
+.page-tabs-content a > .page_tab_close:before{   content: "×"; }
+
+.login-page{ background: #fff; position:relative; margin:0 auto ; clear: both; box-sizing: border-box; z-index: 100}
+.login-box{   align-content: center;width:780px; border: 1px solid #ddd; height: 550px; border-radius: 5px}
+.login-box .logo{  }
+.logobox{  background:rgba(231, 231, 231, 0.4) ; display: flex; flex-direction: column; align-items: flex-start;padding: 20px 50px}
+.logobox >.login-logo{font-size: 45px; color:#555;font-weight: 600;padding: 0 !important; margin: 0 !important; line-height: 100% }
+.logobox >p{ padding: 0; margin: 0; font-size: 13px;color:#555;}
+.login{ padding: 50px 100px ;  }
+.login h1{ font-size: 50px; color: #222;font-weight: 600;padding: 0; margin: 0; line-height: 100% }
+.login-card>p{ align-content: flex-start ; float: left; padding: 10px 0 10px 0; font-size: 14px; color: #666}
+.login-card>p{ align-content: flex-start ; float: left; padding: 10px 0 10px 0; font-size: 14px; color: #666}
+input#saveId{ background-color: #666 !important; border: 1px solid #ddd !important;height: 20px ;width: 20px}
+#saveId:checked{ background-color: #666 !important}
+
+#frmMain > .input-group>.form-control{  border: 1px solid #ddd !important; padding: 20px 20px}
+.btn-login{ padding: 8px 30px !important;background: #e0002a ;border:1px solid  #e0002a; color: #fff; float: right; font-size: 18px}
+.btn-login:hover{color: #fff; background: #ef800a;border:1px solid #bd7a38;  }
+
+.remember {  display: block;  position: relative;  padding-left: 30px;  margin-bottom: 8px;  cursor: pointer;  font-size: 15px; font-weight: 300;
+  -webkit-user-select: none;  -moz-user-select: none;  -ms-user-select: none;  user-select: none;}
+.remember input {  position: absolute;  opacity: 0;  cursor: pointer;  height: 0;  width: 0;}
+/* Create a custom checkbox */
+.checkmark {   border: 1px solid #ddd;position: absolute;  top: 0;  left: 0;  height: 25px;  width: 25px;  background-color: #fff; font-size: 18px; font-weight: normal}
+/* On mouse-over, add a grey background color */
+.remember:hover input ~ .checkmark { background: #fff; border: 1px solid #ddd}
+/* When the checkbox is checked, add a blue background */
+.remember input:checked ~ .checkmark {  background-color:#999;border: 1px solid #888}
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {  content: "";  position: absolute;  display: none;}
+/* Show the checkmark when checked */
+.remember input:checked ~ .checkmark:after {  display: block;}
+/* Style the checkmark/indicator */
+.remember .checkmark:after {  left: 9px;  top: 5px;  width: 5px;  height: 10px;  border: solid white;
+  border-width: 0 2px 2px 0;  -webkit-transform: rotate(45deg);  -ms-transform: rotate(45deg);  transform: rotate(45deg);}
+
+.width100{width:100%}
+input[type="file"]{height: auto}
+.popLabel{margin-right:10px;margin-left: 20px}
+
+
+
+

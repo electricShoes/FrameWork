@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ezsmart.grid">
+<select id="selectColInfo" resultType="EzMap">
+SELECT D.COLORDER                 AS COLUMN_ID              -- Column Index
+     , A.NAME                     AS TABLE_NAME             -- Table Name
+     , D.NAME                     AS COLUMN_NAME            -- Column Name
+     , F.DATA_TYPE                AS DATA_TYPE              -- Column Type
+     , F.CHARACTER_OCTET_LENGTH   AS DATA_LENGTH            -- Column Length
+     , F.NUMERIC_PRECISION        AS DATA_PRECISION
+     , F.NUMERIC_SCALE            AS DATA_SCALE
+     , CASE WHEN F.IS_NULLABLE = 'NO' THEN 'N' ELSE 'Y' END  AS NULLABLE               -- Column Nullable
+     , ''                         AS DATA_DEFAULT
+     , E.VALUE                    AS COMMENTS               -- Column Description
+     , (SELECT 'PK' FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_NAME = A.NAME AND COLUMN_NAME = D.NAME) AS PK
+     , C.VALUE                    AS TABLE_DESCRIPTION      -- Table Description
+  FROM SYSOBJECTS A 
+ INNER JOIN SYSUSERS B         ON A.UID = B.UID
+ INNER JOIN SYSCOLUMNS D         ON D.ID = A.ID
+ INNER JOIN INFORMATION_SCHEMA.COLUMNS F 
+    ON A.NAME = F.TABLE_NAME
+   AND D.NAME = F.COLUMN_NAME
+  LEFT OUTER JOIN SYS.EXTENDED_PROPERTIES C 
+   ON C.MAJOR_ID = A.ID
+   AND C.MINOR_ID = 0
+   AND C.NAME = 'MS_Description'
+  LEFT OUTER JOIN SYS.EXTENDED_PROPERTIES E 
+   ON E.MAJOR_ID = D.ID
+   AND E.MINOR_ID = D.COLID
+   AND E.NAME = 'MS_Description'  
+ WHERE A.TYPE = 'U'
+   AND A.NAME = #{tableName}
+ ORDER BY D.COLORDER
+</select>
+</mapper>

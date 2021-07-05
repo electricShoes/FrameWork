@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ezsmart.langM">
+
+<select id="selectList" resultType="EzMap">
+    SELECT    GUBN_CD
+            , LANG_GB
+            , LANG_CD
+            , LANG_NM
+            , USE_YN
+            , REG_ID
+            , REG_DT
+            , MOD_ID
+            , MOD_DT
+      FROM  ZZ_LANG_M
+     WHERE  1=1
+      
+        <if test="gubnCd != null and gubnCd != ''">
+                      AND GUBN_CD           =       #{gubnCd}
+        </if>
+        <if test="langCd != null and langCd != ''">
+                      AND LANG_CD           =       #{langCd}
+        </if>
+</select>
+
+
+ 
+    <select id="selectListCount" resultType="int">
+                SELECT COUNT(1)
+                FROM ZZ_LANG_M
+                        WHERE 1 = 1
+                
+                <if test="gubnCd != null and gubnCd != ''">
+                              AND GUBN_CD           =       #{gubnCd}
+                </if>
+                <if test="langGb != null and langGb != ''">
+                              AND LANG_GB           =       #{langGb}
+                </if>
+                <if test="langCd != null and langCd != ''">
+                              AND LANG_CD           =       #{langCd}
+                </if>
+                <if test="langNm != null and langNm != ''">
+                              AND LANG_NM           LIKE    '%' + #{langNm} + '%'
+                </if>
+                <if test="useYn != null and useYn != ''">
+                              AND USE_YN            =       #{useYn}
+                </if>
+    </select>
+   
+    <select id="selectLangM" resultType="EzMap">
+               SELECT GUBN_CD
+                    , LANG_GB
+                    , LANG_CD
+                    , LANG_NM
+                    , USE_YN
+                    , REG_ID
+                    , REG_DT
+                    , MOD_ID
+                    , MOD_DT
+                FROM ZZ_LANG_M
+                        WHERE 1 = 1
+               
+                <if test="gubnCd != null and gubnCd != ''">
+                              AND GUBN_CD           =       #{gubnCd}
+                </if>
+                <if test="langGb != null and langGb != ''">
+                              AND LANG_GB           =       #{langGb}
+                </if>
+                <if test="langCd != null and langCd != ''">
+                              AND LANG_CD           =       #{langCd}
+                </if>
+                <if test="langNm != null and langNm != ''">
+                              AND LANG_NM           LIKE    '%' + #{langNm} + '%'
+                </if>
+                <if test="useYn != null and useYn != ''">
+                              AND USE_YN            =       #{useYn}
+                </if>
+    </select>
+    
+    <select id="selectLangSeq" resultType="String">
+        /* */
+        DECLARE @RESULT CHAR(14)
+        EXEC GETSEQ 'TB_TABLE_SEQ', 'M_', 1, 4, @RESULT OUTPUT
+        
+      SELECT @RESULT
+    </select>
+    
+     <select id="selectLangCd" resultType="EzMap">
+     SELECT DTL_CD
+       FROM ZZ_CODE_D
+      WHERE MST_CD = 'LANG_CD'
+    </select>
+    
+   
+</mapper>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ezsmart.zzFileInfoM">
+<!-- ZZ_FILE_INFO_M -->
+    
+    <update id="updateFileInfo">
+       /* ZZ_FILE_INFO_M - updateFileInfo */
+       UPDATE ZZ_FILE_INFO_M  
+          SET FILE_NAME            =         #{fileName}
+            , FILE_SIZE            =         #{fileSize}
+            , SAVE_NAME            =         #{saveName}
+            , FILE_EXT             =         #{fileExt}
+            , MIME_TYPE            =         #{mimeType}
+            , MOD_ID               =         #{modId}
+            , MOD_DT               =         GETDATE()
+        WHERE FILE_ID              =         #{fileId}
+          AND FILE_NO              =         #{fileNo}
+    </update>
+    
+    <insert id="insertFileInfo">
+        /* ZZ_FILE_INFO_M - insertFileInfo */
+        <selectKey order="BEFORE" keyProperty="fileNo" resultType="int">
+            SELECT CASE WHEN #{fileNo} IS NULL OR  #{fileNo} = 0 THEN ISNULL(MAX(FILE_NO),0) + 1 
+                        ELSE  #{fileNo} END
+              FROM ZZ_FILE_INFO_M
+             WHERE FILE_ID = #{fileId} 
+        </selectKey>
+       
+        INSERT INTO ZZ_FILE_INFO_M (
+               FILE_ID
+             , FILE_NO
+             , FILE_NAME
+             , FILE_SIZE
+             , SAVE_NAME
+             , FILE_EXT
+             , MIME_TYPE
+             , REG_ID
+             , REG_DT
+             , MOD_ID
+             , MOD_DT
+         ) VALUES (
+               #{fileId}
+             , #{fileNo}
+             , #{fileName}
+             , #{fileSize}
+             , #{saveName}
+             , #{fileExt} 
+             , #{mimeType}
+             , #{modId}
+             , GETDATE()
+             , #{regId}
+             , GETDATE()
+         )
+    </insert>
+    
+    <delete id="deleteFileInfo">
+       /* ZZ_FILE_INFO_M - deleteFileInfo */
+       DELETE ZZ_FILE_INFO_M
+        WHERE FILE_ID           =       #{fileId}
+        <if test="fileNo != null and fileNo != ''">
+          AND FILE_NO           =       #{fileNo} 
+        </if>
+    </delete>
+</mapper>

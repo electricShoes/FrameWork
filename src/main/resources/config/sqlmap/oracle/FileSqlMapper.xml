@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ezsmart.file">
+    <sql id="sqlPkConditions">
+        WHERE FILE_ID           =       #{fileId}
+          AND FILE_NO           =       #{fileNo} 
+    </sql>
+    <sql id="sqlCols">
+            FILE_ID
+          , FILE_NO
+          , FILE_NAME
+          , FILE_SIZE
+          , SAVE_NAME
+          , FILE_EXT
+          , MIME_TYPE
+          , REG_ID
+          , REG_DT
+          , MOD_ID
+          , MOD_DT
+    </sql>
+    <sql id="sqlConditions">
+        FROM TB_FILE_INFO_M A
+         WHERE 1=1
+        <if test="fileId != null and fileId != ''">
+          AND FILE_ID = #{fileId}
+        </if>  
+        <if test="fileNo != null and fileNo != ''">
+          AND FILE_NO = #{fileNo}
+        </if> 
+        <if test="fileName != null and fileName != ''">
+          AND UPPER(FILE_NAME) LIKE '%' || UPPER(#{fileName}) || '%'
+        </if>
+        <if test="fileExt != null and fileExt != ''">
+          AND FILE_EXT = UPPER(fileExt)
+        </if>
+    </sql>
+    
+    <select id="selectListCount" resultType="int">
+        SELECT COUNT(1)
+        <include refid="sqlConditions" />
+    </select>
+    <select id="selectList" resultType="EzMap">
+        <include refid="ezsmart.inc.pagingHeader"/>
+       SELECT <include refid="sqlCols"/>
+            , REPLACE(REPLACE(REPLACE(CONVERT(VARCHAR, REG_DT, 120), '-', ''), ':', ''), ' ', '') UPL_DT
+       <include refid="sqlConditions"/>
+       ORDER BY FILE_ID DESC,FILE_NO 
+        <include refid="ezsmart.inc.pagingFooter"/>
+    </select>
+    <select id="selectFileInfo" resultType="EzMap">
+        SELECT <include refid="sqlCols" />
+       FROM TB_FILE_INFO_M
+      <include refid="sqlPkConditions" />
+    </select>
+    <update id="updateFileInfo">
+       UPDATE TB_FILE_INFO_M  
+          SET FILE_NAME            =         #{fileName}
+            , FILE_SIZE            =         #{fileSize}
+            , SAVE_NAME            =         #{saveName}
+            , FILE_EXT             =         #{fileExt}
+            , MIME_TYPE            =         #{mimeType}
+            , MOD_ID               =         #{modId}
+            , MOD_DT               =         GETDATE()
+         <include refid="sqlPkConditions" />
+    </update>
+    
+    <insert id="insertFileInfo">
+       
+        <selectKey order="BEFORE" keyProperty="fileNo" resultType="int">
+            SELECT NVL(DECODE(#{fileNo},0,NULL,#{fileNo}),NVL(MAX(FILE_NO),0) + 1 )
+              FROM TB_FILE_INFO_M
+             WHERE FILE_ID = #{fileId} 
+        </selectKey>
+       
+        INSERT INTO TB_FILE_INFO_M (
+               <include refid="sqlCols"/>
+         ) VALUES (
+               #{fileId}
+             , #{fileNo}
+             , #{fileName}
+             , #{fileSize}
+             , #{saveName}
+             , #{fileExt} 
+             , #{mimeType}
+             , #{modId}
+             , GETDATE()
+             , #{regId}
+             , GETDATE()
+         )
+    </insert>
+    <delete id="deleteFileInfo">
+       DELETE TB_FILE_INFO_M
+        WHERE FILE_ID           =       #{fileId}
+        <if test="fileNo != null and fileNo != ''">
+          AND FILE_NO           =       #{fileNo} 
+        </if>
+    </delete>
+</mapper>

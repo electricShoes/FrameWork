@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<grid id='grdList' desc='거래처코드'>
+    <meta>
+        <deletable value="N" />
+        <rollbackable value="N" />
+        <appendable value="N" />
+        <readOnly value="Y" />
+        <showCheckbox value="Y" />
+        <showNumber value="Y" />
+        <showStateBar value="Y" />
+        <showHeaderSum value="N" />
+        <showFooter value="N" />
+        <insertable value="N" />
+        <editable value="Y" />
+        <rowSelection value="N" />
+        <gridfitStyle value="evenFill" />
+        <columnMove value="N" />
+        <setSort value="none" />
+    </meta>
+    <column name="거래처코드" field="serId" type="char" maxLength="20" width="80" textAlignment="left" required="N" readOnly="Y"  />
+    <column name="거래처명" field="uerId" type="char" maxLength="20" width="80" textAlignment="left" required="N" readOnly="Y"  />
+    <column name="사업자번호" field="usrId" type="char" maxLength="20" width="80" textAlignment="left" required="N" readOnly="Y"  /> 
+    <column name="대표자" field="useId" type="char" maxLength="20" width="80" textAlignment="left" required="N" readOnly="Y"  />
+    <column name="주소" field="userd" type="char" maxLength="20" width="80" textAlignment="left" required="N" readOnly="Y"  /> 
+    <column name="업태" field="userI" type="char" maxLength="20" width="80" textAlignment="left" required="N" readOnly="Y"  />
+    <column name="업종" field="user" type="char" maxLength="20" width="80" textAlignment="left" required="N" readOnly="Y"  />
+    <column name="요청자" field="urId" type="char" maxLength="20" width="80" textAlignment="left" required="N" readOnly="Y"  />
+    <column name="상태" field="erId" type="char" maxLength="20" width="80" textAlignment="left" required="N" readOnly="Y"  />
+    <column name="등록일" field="uId" type="char" maxLength="20" width="80" textAlignment="left" required="N" readOnly="Y" />     
+    <column name="승인일" field="ud" type="char" maxLength="20" width="80" textAlignment="left" required="N" readOnly="Y"  />
+</grid>

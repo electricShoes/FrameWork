@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<grid id='grdList' desc='사용자'>
+    <meta>
+        <deletable value="N" />
+        <rollbackable value="N" />
+        <appendable value="N" />
+        <readOnly value="Y" />
+        <showCheckbox value="Y" />
+        <showNumber value="Y" />
+        <showStateBar value="Y" />
+        <showHeaderSum value="N" />
+        <showFooter value="N" />
+        <insertable value="N" />
+        <editable value="Y" />
+        <rowSelection value="N" />
+        <gridfitStyle value="evenFill" />
+        <columnMove value="N" />
+        <setSort value="none" />
+    </meta>
+    <column name="사용자아이디" field="empNo" type="char" maxLength="10" width="80" textAlignment="left" required="Y" Pk="Y" readOnly="Y" hidden="Y" />
+    <column name="로그인아이디" field="userId" type="char" maxLength="20" width="80" textAlignment="left" required="N" readOnly="Y" hidden="N" />
+    <!-- <column name="로그인암호" field="pwd" type="char" maxLength="200" width="80" textAlignment="left" required="N" readOnly="Y" hidden="Y" /> -->
+    <column name="사용자명" field="userNm" type="char" maxLength="100" width="80" textAlignment="left" required="Y" hidden="N" />
+    <column name="사용자이메일" field="emlAdr" type="char" maxLength="100" width="80" textAlignment="left" required="N" hidden="N" />
+    <column name="암호변경일" field="pwdChgDt" type="datetime" maxLength="14" width="80" textAlignment="center" required="N" readOnly="Y" hidden="N" />
+    <column name="로그인실패수" field="lgiFailCnt" type="int" maxLength="2" width="80" textAlignment="right" required="Y" readOnly="Y" defaultValue="0" digit="2" place="0" hidden="N" />
+    <column name="기본언어" field="langGb" type="char" maxLength="10" width="80" textAlignment="center" required="Y" defaultValue="KO" hidden="Y" />
+    <!-- <column name="탈퇴여부" field="delYn" type="checkbox" maxLength="1" width="80" textAlignment="center" required="Y" defaultValue="N" hidden="N" /> -->
+    <column name="탈퇴여부" field="delYn" type="combo" maxLength="1" width="80" textAlignment="center" required="Y" defaultValue="N" hidden="N" />
+    <!-- <column name="전화번호" field="mobileNo" type="phone" maxLength="11" width="80" textAlignment="left" required="N" hidden="N" /> -->
+    <!-- <column name="이메일인증여부" field="emlAuthYn" type="checkbox" maxLength="20" width="80" textAlignment="center" required="Y" defaultValue="N" hidden="N" /> -->
+    <column name="이메일인증여부" field="emlAuthYn" type="combo" maxLength="20" width="80" textAlignment="center" required="Y" defaultValue="N" hidden="N" />
+    <!-- <column name="휴대폰인증여부" field="hpAuthYn" type="checkbox" maxLength="20" width="80" textAlignment="center" required="Y" defaultValue="N" hidden="N" /> -->
+    <column name="휴대폰인증여부" field="hpAuthYn" type="combo" maxLength="20" width="80" textAlignment="center" required="Y" defaultValue="N" hidden="N" />
+    <column name="본인인증키" field="niceAuthKey" type="char" maxLength="200" width="80" textAlignment="left" required="N" hidden="N" />
+    <!-- <column name="마지막로그인일시" field="lastLgiDt" type="datetime" width="80" textAlignment="center" required="N" readOnly="Y" hidden="N" /> -->
+    <column name="마지막로그인일시" field="lastLgiDt" type="char" width="80" textAlignment="center" required="N" readOnly="Y" hidden="N" />
+    <column name="암호만료일시" field="pwdXprDt" type="date" maxLength="14" width="80" textAlignment="center" required="N" hidden="N" />
+    <!-- <column name="암호초기화" field="btnRestPwd" type="button" width="80" required="N" hidden="N" /> -->
+    <!-- <column name="그룹" field="btnGroup" type="button" width="80" required="N" hidden="N" /> -->
+    
+    <!-- <column name="로그인아이디" field="userId" type="char" maxLength="20" width="80" textAlignment="left" required="N" readOnly="Y" hidden="N" />
+    <column name="사용자명" field="userNm" type="char" maxLength="100" width="80" textAlignment="left" required="Y" hidden="N" />
+    <column name="암호초기화" field="btnRestPwd" type="button" width="80" required="N" hidden="N" />
+    <column name="그룹" field="btnGroup" type="button" width="80" required="N" hidden="N" />
+    <column name="탈퇴여부" field="delYn" type="checkbox" maxLength="1" width="80" textAlignment="center" required="Y" defaultValue="N" hidden="N" />
+    
+    <column name="사용자이메일" field="emlAdr" type="char" maxLength="100" width="80" textAlignment="left" required="N" hidden="Y" />
+    <column name="전화번호" field="mobileNo" type="char" maxLength="11" width="80" textAlignment="left" required="N" hidden="Y" />
+    <column name="기본언어" field="langGb" type="char" maxLength="10" width="80" textAlignment="center" required="Y" defaultValue="KO" hidden="Y" />
+    <column name="마지막로그인일시" field="lastLgiDt" type="char" width="80" textAlignment="center" required="N" readOnly="Y" hidden="Y" /> -->
+    
+</grid>

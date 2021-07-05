@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ezsmart.zzUserM">
+<!-- ZZ_USER_M -->
+    
+    <update id="updateUser">
+       /* ZZ_USER_M - updateUser */
+       UPDATE ZZ_USER_M
+         SET  USER_NM              =         #{userNm}
+            , EML_ADR              =         #{emlAdr}   
+            , LANG_GB              =         ISNULL(#{langGb},LANG_GB)
+            , EML_AUTH_YN          =         #{emlAuthYn}
+            , HP_AUTH_YN           =         #{hpAuthYn}
+            , NICE_AUTH_KEY        =         #{niceAuthKey}
+            , PWD_XPR_DT           =         #{pwdXprDt}
+            , DEL_YN               =         #{delYn}
+            , MOD_ID               =         #{modId}
+            , MOD_DT               =         GETDATE()
+         <choose>
+             <when test="empNo !=null and empNo !=''">
+        WHERE EMP_NO = #{empNo}
+             </when>
+             <otherwise>
+        WHERE USER_ID = #{userId}
+             </otherwise>
+           </choose>
+    </update>
+    
+    <update id="updatePassword">
+       /* ZZ_USER_M - updatePassword */
+       UPDATE ZZ_USER_M
+          SET PWD                  =        #{pwd}
+            , PWD_CHG_DT           =        REPLACE(REPLACE(REPLACE(CONVERT(VARCHAR(19), CONVERT(DATETIME, GETDATE(),112), 126), '-', ''), 'T', ''), ':', '')
+            , PWD_XPR_DT           =        CONVERT(VARCHAR(12), GETDATE(), 112)
+            , MOD_ID               =        #{modId}
+            , MOD_DT               =        GETDATE()
+         <choose>
+             <when test="empNo !=null and empNo !=''">
+        WHERE EMP_NO = #{empNo}
+             </when>
+             <otherwise>
+        WHERE USER_ID = #{userId}
+             </otherwise>
+         </choose>
+    </update>
+    
+    <update id="updateLogin">
+       /* ZZ_USER_M - updateLogin */
+       UPDATE ZZ_USER_M
+          SET LAST_LGI_DT        =    GETDATE()
+            , LGI_FAIL_CNT       =    0   
+         <choose>
+             <when test="empNo !=null and empNo !=''">
+        WHERE EMP_NO = #{empNo}
+             </when>
+             <otherwise>
+        WHERE USER_ID = #{userId}
+             </otherwise>
+         </choose>
+    </update>
+    
+    <update id="updateLoginFail">
+       /* ZZ_USER_M - updateLoginFail */
+       UPDATE ZZ_USER_M
+          SET LAST_LGI_DT        =    GETDATE()   
+            , LGI_FAIL_CNT       =    ISNULL(LGI_FAIL_CNT,0) + 1
+         <choose>
+             <when test="empNo !=null and empNo !=''">
+        WHERE EMP_NO = #{empNo}
+             </when>
+             <otherwise>
+        WHERE USER_ID = #{userId}
+             </otherwise>
+         </choose>
+    </update>
+    
+    <update id="updatDelYn">
+       /* ZZ_USER_M - updatDelYn */
+       UPDATE ZZ_USER_M
+          SET DEL_YN               =    #{delYn}
+            , MOD_ID               =    #{modId}
+            , MOD_DT               =    GETDATE()
+         <choose>
+             <when test="empNo !=null and empNo !=''">
+        WHERE EMP_NO = #{empNo}
+             </when>
+             <otherwise>
+        WHERE USER_ID = #{userId}
+             </otherwise>
+         </choose>
+    </update>
+    
+    <insert id="insertUser">
+        /* ZZ_USER_M - insertUser */
+        <selectKey order="BEFORE" keyProperty="empNo" resultType="String">
+           SELECT CASE WHEN MAX(EMP_NO) = NULL THEN CONVERT(VARCHAR(4), GETDATE(), 120) + '000000' + 1
+                                               ELSE MAX(EMP_NO) + 1
+                                                END
+             FROM ZZ_USER_M
+            WHERE EMP_NO LIKE CONVERT(VARCHAR(4), GETDATE(), 120) + '%'
+        </selectKey>
+        INSERT INTO ZZ_USER_M (
+               CMPY_CD
+             , EMP_NO
+             , USER_ID
+             , PWD
+             , USER_NM
+             , EML_ADR
+             , PWD_CHG_DT
+             , LGI_FAIL_CNT
+             , LANG_GB
+             , DEL_YN
+             , EML_AUTH_YN
+             , HP_AUTH_YN
+             , NICE_AUTH_KEY
+             , LAST_LGI_DT
+             , PWD_XPR_DT
+             , REG_ID
+             , REG_DT
+             , MOD_ID
+             , MOD_DT
+         ) VALUES (
+               '0000'
+             , #{empNo}
+             , #{userId}
+             , #{pwd}
+             , #{userNm}
+             , #{emlAdr}
+             , NULL 
+             , 0
+             , CASE WHEN #{langGb} = NULL
+                    THEN 'KO'
+                    ELSE #{langGb} END
+             , CASE WHEN #{delYn} = NULL
+                    THEN 'N'
+                    ELSE #{delYn} END
+             , CASE WHEN #{emlAuthYn} = NULL
+                    THEN 'N'
+                    ELSE #{emlAuthYn} END
+             , CASE WHEN #{hpAuthYn} = NULL
+                    THEN 'N'
+                    ELSE #{emlAuthYn} END
+             , #{niceAuthKey}
+             , #{lastLgiDt}
+             , #{pwdXprDt}
+             , #{modId}
+             , GETDATE()
+             , #{regId}
+             , GETDATE()
+         )
+    </insert>
+    
+    <delete id="deleteUser">
+       /* ZZ_USER_M - deleteUser */
+       DELETE ZZ_USER_M
+       <choose>
+           <when test="empNo !=null and empNo !=''">
+        WHERE EMP_NO = #{empNo}
+           </when>
+           <otherwise>
+        WHERE USER_ID = #{userId}
+           </otherwise>
+       </choose>
+    </delete>
+</mapper>

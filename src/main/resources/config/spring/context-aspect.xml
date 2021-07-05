@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd">
+
+	
+    <!-- DB입력시 공통 파라메터등을 설정하기 위함 -->
+    <bean id="baseDaoAspect" 	class="cspi.ezsmart.common.aop.BaseDaoAspect" />
+    <bean id="logDaoAspect"    class="cspi.ezsmart.common.aop.LogDaoAspect" />
+     
+    <aop:config>
+        <aop:aspect id="insertBefore" ref="baseDaoAspect">
+			<aop:pointcut id="insertMethod" expression="execution(* *..*Dao.insert*(..))" />
+			<aop:before pointcut-ref="insertMethod" method="insertBefore" />
+		</aop:aspect>
+		<aop:aspect id="updateBefore" ref="baseDaoAspect">
+			<aop:pointcut id="updateMethod" expression="execution(* *..*Dao.update*(..))" />
+			<aop:before pointcut-ref="updateMethod" method="updateBefore" />
+		</aop:aspect>
+        <aop:aspect id="deleteBefore" ref="baseDaoAspect">
+            <aop:pointcut id="deleteMethod" expression="execution(* *..*Dao.delete*(..))" />
+            <aop:before pointcut-ref="updateMethod" method="updateBefore" />
+        </aop:aspect>
+		<aop:aspect id="selectListBefore" ref="baseDaoAspect">
+			<aop:pointcut id="selectListMethod" expression="execution(* *..*Dao.select*List*(..))" />
+			<aop:before pointcut-ref="selectListMethod" method="selectListBefore" />
+		</aop:aspect>
+		<aop:aspect id="selectBefore" ref="baseDaoAspect">
+			<aop:pointcut id="selectMethod" expression="execution(* *..*Dao.select*(..))" />
+			<aop:before pointcut-ref="selectMethod" method="selectBefore" />
+		</aop:aspect>
+        
+        <aop:aspect id="sqlBeforeController" ref="logDaoAspect">
+            <aop:pointcut id="sqlBeforeController" expression="execution(* *..*Controller.*(..))" />
+            <aop:before pointcut-ref="sqlBeforeController" method="sqlBeforeController" />
+        </aop:aspect>
+        <aop:aspect id="sqlBeforeService" ref="logDaoAspect">
+            <aop:pointcut id="sqlBeforeService" expression="execution(* *..*Service.*(..))" />
+            <aop:before pointcut-ref="sqlBeforeService" method="sqlBeforeService" />
+        </aop:aspect>
+         <aop:aspect id="sqlBeforeMenthod" ref="logDaoAspect">
+            <aop:pointcut id="sqlBeforeMenthod" expression="execution(* *..*Dao.*(..))" />
+            <aop:before pointcut-ref="sqlBeforeMenthod" method="sqlBeforeMenthod" />
+        </aop:aspect>
+        <aop:aspect id="sqlBefore" ref="logDaoAspect">
+            <aop:pointcut id="beforeMethod" expression="execution(* *..*SessionTemplate.*(..))" />
+            <aop:before pointcut-ref="beforeMethod" method="sqlBefore" />
+        </aop:aspect>
+        <aop:aspect id="sqlAfter" ref="logDaoAspect">
+            <aop:pointcut id="afterMethod" expression="execution(* *..*SessionTemplate.*(..))" />
+            <aop:after pointcut-ref="afterMethod" method="sqlAfter" />
+        </aop:aspect>
+    </aop:config>
+    
+   	<bean id="ezsmart.LoggingAspect" class="cspi.ezsmart.common.aop.EzLoggingAspect">
+        <property name="thresholdInMills" value="3000" />
+    </bean>
+    <aop:config proxy-target-class="true">
+        <aop:pointcut id="ezsmart.ServicePointcut" 
+            expression="execution(* cspi.ezsmart..*Impl.*(..)) or execution(* cspi.rest..*Impl.*(..)) " />
+        <aop:aspect ref="ezsmart.LoggingAspect">
+            <aop:around pointcut-ref="ezsmart.ServicePointcut" method="logProfiling" />
+            <aop:after-throwing pointcut-ref="ezsmart.ServicePointcut" throwing="ex" method="logException" />
+        </aop:aspect>
+    </aop:config>
+  	 
+  	 
+  	  	
+    <!-- 
+	<aop:config>
+		<aop:pointcut id="serviceMethod" expression="execution(* egovframework.example..impl.*Impl.*(..))" />
+
+		<aop:aspect ref="exceptionTransfer">
+			<aop:after-throwing throwing="exception" pointcut-ref="serviceMethod" method="transfer" />
+		</aop:aspect>
+	</aop:config>
+	
+	<bean id="exceptionTransfer" class="egovframework.rte.fdl.cmmn.aspect.ExceptionTransfer">
+		<property name="exceptionHandlerService">
+			<list>
+				<ref bean="defaultExceptionHandleManager" />
+				<ref bean="otherExceptionHandleManager" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="defaultExceptionHandleManager" class="egovframework.rte.fdl.cmmn.exception.manager.DefaultExceptionHandleManager">
+		<property name="reqExpMatcher">
+			<ref bean="antPathMater"/>
+		</property>
+		<property name="patterns">
+			<list>
+				<value>**service.impl.*</value>
+			</list>
+		</property>
+		<property name="handlers">
+			<list>
+				<ref bean="egovHandler" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="otherExceptionHandleManager" class="egovframework.rte.fdl.cmmn.exception.manager.DefaultExceptionHandleManager">
+		<property name="reqExpMatcher">
+			<ref bean="antPathMater"/>
+		</property>
+		<property name="patterns">
+			<list>
+				<value>**service.impl.*</value>
+			</list>
+		</property>
+		<property name="handlers">
+			<list>
+				<ref bean="otherHandler" />
+			</list>
+		</property>
+	</bean>
+
+	<bean id="egovHandler" class="egovframework.example.cmmn.EgovSampleExcepHndlr" />
+	<bean id="otherHandler" class="egovframework.example.cmmn.EgovSampleOthersExcepHndlr" />	
+	 -->
+</beans>

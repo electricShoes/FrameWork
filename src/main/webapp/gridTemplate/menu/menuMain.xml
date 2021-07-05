@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<grid>
+    <meta>
+        <deletable value="N" />
+        <rollbackable value="N" />
+        <appendable value="N" />
+        <readOnly value="N" />
+        <showCheckbox value="Y" />
+        <showNumber value="Y" />
+        <showStateBar value="Y" />
+        <showHeaderSum value="N" />
+        <showFooter value="N" />
+        <insertable value="N" />
+        <editable value="Y" />
+        <rowSelection value="N" />
+        <gridfitStyle value="evenFill" />
+        <columnMove value="N" />
+        <setSort value="none" />
+    </meta>
+    <column name="메뉴아이디" field="menuId" type="char" maxLength="10" width="80" textAlignment="center" required="Y" readOnly="Y" hidden="Y" />
+    <column name="메뉴명" field="menuNm" type="char" maxLength="1000" width="80" textAlignment="left" required="Y" hidden="N" />
+    <column name="메뉴주소" field="menuUrl" type="char" maxLength="1000" width="80" textAlignment="left" hidden="N" />
+    <column name="상위메뉴" field="upMenuId" type="char" maxLength="20" width="80" textAlignment="center" readOnly="Y" hidden="Y" />
+    <column name="시스템메뉴" field="rootMenuId" type="char" maxLength="20" width="80" textAlignment="center" required="Y" readOnly="Y" hidden="Y" />
+    <column name="메뉴레벨" field="menuLevel" type="int" maxLength="3" width="50" textAlignment="right" required="Y" readOnly="Y" digit="3" place="0" hidden="N" />
+    <column name="메뉴순번" field="menuSeq" type="int" maxLength="3" width="50" textAlignment="right" required="Y" digit="3" place="0" hidden="N" />
+    <column name="메뉴보이기" field="menuShowYn" type="checkbox" maxLength="1" width="60" textAlignment="center" required="Y" hidden="N" />
+    <column name="메뉴아이콘" field="menuIcon" type="char" maxLength="100" width="80" textAlignment="left" hidden="N" />
+    <column name="권한체크" field="menuAuthYn" type="checkbox" maxLength="1" width="50" textAlignment="center" required="Y" defaultValue="Y" hidden="Y" />
+    <column name="메뉴언어" field="langGb" type="char" maxLength="10" width="60" textAlignment="center" required="Y" defaultValue="KO" hidden="Y" />
+    <column name="사용여부" field="useYn" type="checkbox" maxLength="1" width="50" textAlignment="center" required="Y" defaultValue="Y" hidden="N" />
+    <!-- <column name="그룹" field="btnGroup" type="button" width="50" required="N" hidden="N" /> -->
+    <column name="그룹" field="btnGroup" type="html" width="50" required="N" hidden="N" htmlCallback="htmlCallback" />
+</grid>

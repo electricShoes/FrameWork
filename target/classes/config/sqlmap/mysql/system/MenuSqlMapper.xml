@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ezsmart.menu">
+<!-- 사용자별 권한 메뉴 가져오기 -->
+    
+    <!-- 메뉴 리스트 조회 -->
+    <select id="selectUserMenuList" resultType="EzMenuMap">
+        /* Menu_SqlMapper - selectUserMenuList */
+        SELECT A.MENU_ID
+             , A.MENU_NM
+             , A.MENU_URL
+             , A.UP_MENU_ID
+             , A.ROOT_MENU_ID
+             , A.MENU_LEVEL
+             , A.MENU_SEQ
+             , A.MENU_SHOW_YN
+             , A.MENU_ICON
+             , A.LANG_GB
+             , A.MENU_AUTH_YN
+          FROM ZZ_MENU_M A
+         WHERE ROOT_MENU_ID = #{rootMenuId}
+           AND USE_YN       = 'Y'
+           AND (  A.MENU_AUTH_YN = 'N' 
+               OR A.MENU_ID IN (SELECT MENU_ID FROM ZZ_GRP_MENU_M WHERE GRP_ID IN (SELECT GRP_ID FROM ZZ_GRP_USER_M WHERE USER_ID = #{userId}))
+               OR A.MENU_URL IS NULL )
+         ORDER BY A.ROOT_MENU_ID, A.MENU_LEVEL, A.MENU_SEQ
+    </select>
+    
+    <!-- 메뉴 리스트 개수 조회 - 페이지 -->
+    <select id="selectListCount" resultType="int">
+        /* Menu_SqlMapper - selectListCount */
+        SELECT COUNT(1)
+          FROM ZZ_MENU_M A
+         WHERE 1=1
+         <if test="menuId != null and menuId != ''">
+           AND MENU_ID = #{menuId}
+         </if>  
+         <if test="menuLevel != null and menuLevel != ''">
+           AND MENU_LEVEL = #{menuLevel}
+         </if> 
+         <if test="upMenuId != null  and upMenuId != ''" >
+           AND UP_MENU_ID = #{upMenuId}
+         </if>
+         <if test="menuNm != null and menuNm != ''">
+           AND MENU_NM LIKE '%' + #{menuNm} + '%'
+         </if>
+         <if test="rootMenuId != null and rootMenuId != ''">
+           AND ROOT_MENU_ID LIKE '%' + #{rootMenuId} + '%'
+         </if>
+         <if test="menuUrl != null and menuUrl != ''">
+           AND MENU_URL = #{menuUrl}
+         </if>
+         <if test="menuAuthYn != null and menuAuthYn != ''">
+           AND MENU_AUTH_YN = #{menuAuthYn}
+         </if>
+         <if test="exGrpId != null and exGrpId != ''">
+           AND MENU_ID NOT IN (SELECT MENU_ID FROM ZZ_GRP_MENU_M WHERE GRP_ID = #{exGrpId})
+           AND MENU_URL IS NOT NULL
+           AND MENU_AUTH_YN = 'Y'
+         </if>
+         <if test="grpId != null and grpId != ''">
+           AND MENU_ID  IN (SELECT MENU_ID FROM ZZ_GRP_MENU_M WHERE GRP_ID = #{grpId})
+           AND MENU_URL IS NOT NULL
+           AND MENU_AUTH_YN = 'Y'
+         </if>
+    </select>
+    
+    <!-- 메뉴 조회 -->
+    <select id="selectList" resultType="EzMenuMap">
+       /* Menu_SqlMapper - selectList */
+       SELECT CMPY_CD
+            , MENU_ID
+            , MENU_NM
+            , MENU_URL
+            , UP_MENU_ID
+            , ROOT_MENU_ID
+            , MENU_LEVEL
+            , MENU_SEQ
+            , MENU_SHOW_YN
+            , MENU_ICON
+            , LANG_GB
+            , MENU_AUTH_YN
+            , USE_YN
+            , MENU_LEVEL AS ICON_FIELD
+            , REG_ID
+            , REG_DT
+            , MOD_ID
+            , MOD_DT
+ 	     FROM ZZ_MENU_M A
+        WHERE 1=1
+        <if test="menuId != null and menuId != ''">
+          AND MENU_ID = #{menuId}
+        </if>  
+        <if test="menuLevel != null and menuLevel != ''">
+          AND MENU_LEVEL = #{menuLevel}
+        </if> 
+        <if test="upMenuId != null  and upMenuId != ''" >
+          AND UP_MENU_ID = #{upMenuId}
+        </if>
+        <if test="menuNm != null and menuNm != ''">
+          AND MENU_NM LIKE '%' + #{menuNm} + '%'
+        </if>
+        <if test="rootMenuId != null and rootMenuId != ''">
+          AND ROOT_MENU_ID LIKE '%' + #{rootMenuId} + '%'
+        </if>
+        <if test="menuUrl != null and menuUrl != ''">
+          AND MENU_URL = #{menuUrl}
+        </if>
+        <if test="menuAuthYn != null and menuAuthYn != ''">
+          AND MENU_AUTH_YN = #{menuAuthYn}
+        </if>
+        <if test="exGrpId != null and exGrpId != ''">
+          AND MENU_ID NOT IN (SELECT MENU_ID FROM ZZ_GRP_MENU_M WHERE GRP_ID = #{exGrpId})
+          AND MENU_URL IS NOT NULL
+          AND MENU_AUTH_YN = 'Y'
+        </if>
+        <if test="grpId != null and grpId != ''">
+          AND MENU_ID  IN (SELECT MENU_ID FROM ZZ_GRP_MENU_M WHERE GRP_ID = #{grpId})
+          AND MENU_URL IS NOT NULL
+          AND MENU_AUTH_YN = 'Y'
+        </if>
+ 	    ORDER BY MENU_SEQ, MENU_ID
+        
+    </select>
+    
+    <!-- 메뉴 id로 조회 -->
+    <select id="selectMenu" resultType="EzMenuMap">
+        /* Menu_SqlMapper - selectMenu */
+        SELECT CMPY_CD
+             , MENU_ID
+             , MENU_NM
+             , MENU_URL
+             , UP_MENU_ID
+             , ROOT_MENU_ID
+             , MENU_LEVEL
+             , MENU_SEQ
+             , MENU_SHOW_YN
+             , MENU_ICON
+             , LANG_GB
+             , MENU_AUTH_YN
+             , USE_YN
+             , REG_ID
+             , REG_DT
+             , MOD_ID
+             , MOD_DT
+       FROM ZZ_MENU_M
+      WHERE MENU_ID = #{menuId}
+    </select>
+    
+    <!-- 메뉴 업데이트 -->
+    <update id="updateMenu">
+      /* Menu_SqlMapper - updateMenu */
+      UPDATE ZZ_MENU_M
+         SET   MENU_NM            =       #{menuNm}
+             , MENU_URL             =       #{menuUrl}
+             , MENU_SEQ             =       #{menuSeq}
+             , MENU_SHOW_YN         =       #{menuShowYn}
+             , MENU_ICON            =       #{menuIcon}
+             , MENU_AUTH_YN         =       #{menuAuthYn}
+             , USE_YN               =       #{useYn}
+             , MOD_ID               =       #{modId}
+             , MOD_DT               =       NOW()
+         WHERE MENU_ID = #{menuId}
+    </update>
+    
+    <!-- 메뉴 추가 -->
+    <insert id="insertMenu">
+        /* Menu_SqlMapper - insertMenu */
+        INSERT INTO ZZ_MENU_M (
+               CMPY_CD
+             , MENU_ID
+             , MENU_NM
+             , MENU_URL
+             , UP_MENU_ID
+             , ROOT_MENU_ID
+             , MENU_LEVEL
+             , MENU_SEQ
+             , MENU_SHOW_YN
+             , MENU_ICON
+             , LANG_GB
+             , MENU_AUTH_YN
+             , USE_YN
+             , REG_ID
+             , REG_DT
+             , MOD_ID
+             , MOD_DT
+         ) VALUES (
+               '0000'
+             , #{menuId}   
+             , #{menuNm}
+             , #{menuUrl}
+             , CASE WHEN #{menuLevel} = 1
+                    THEN NULL
+                    ELSE #{upMenuId} END
+             , CASE WHEN #{menuLevel} = 1
+                    THEN #{menuId}
+                    ELSE #{rootMenuId}
+                     END
+			 , #{menuLevel}
+			 , #{menuSeq}
+             , CASE WHEN #{menuShowYn} = 'Y'
+                    THEN 'Y'
+                    ELSE 'N'
+                     END 
+			 , #{menuIcon}      
+ 			 , #{langGb}
+			 , #{menuAuthYn}   
+             , #{useYn} 
+			 , #{modId}          
+             , NOW()
+             , #{regId}
+             , NOW()
+         )
+    </insert>
+    
+    <!-- 메뉴 삭제 -->
+    <delete id="deleteMenu">
+       /* Menu_SqlMapper - deleteMenu */
+       DELETE ZZ_MENU_M
+        WHERE MENU_ID = #{menuId}
+    </delete>
+</mapper>

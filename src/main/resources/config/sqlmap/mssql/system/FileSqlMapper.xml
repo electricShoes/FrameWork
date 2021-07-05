@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ezsmart.file">
+    
+    <select id="selectListCount" resultType="int">
+        /* FileSqlMapper - selectListCount */
+        SELECT COUNT(1)
+          FROM ZZ_FILE_INFO_M A
+           WHERE 1=1
+          <if test="fileId != null and fileId != ''">
+            AND FILE_ID = #{fileId}
+          </if>  
+          <if test="fileNo != null and fileNo != ''">
+            AND FILE_NO = #{fileNo}
+          </if> 
+          <if test="fileName != null and fileName != ''">
+            AND UPPER(FILE_NAME) LIKE '%' + UPPER(#{fileName}) + '%'
+          </if>
+          <if test="fileExt != null and fileExt != ''">
+            AND FILE_EXT = UPPER(fileExt)
+          </if>
+    </select>
+    <select id="selectList" resultType="EzMap">
+       /* FileSqlMapper - selectList */
+       <include refid="ezsmart.inc.pagingHeader"/>
+       SELECT FILE_ID
+            , FILE_NO
+            , FILE_NAME
+            , FILE_SIZE
+            , SAVE_NAME
+            , FILE_EXT
+            , MIME_TYPE
+            , REG_ID
+            , REG_DT
+            , MOD_ID
+            , MOD_DT
+            , CONVERT(DATETIME, REG_DT) UPL_DT
+         FROM ZZ_FILE_INFO_M A
+        WHERE 1=1
+        <if test="fileId != null and fileId != ''">
+          AND FILE_ID = #{fileId}
+        </if>  
+        <if test="fileNo != null and fileNo != ''">
+          AND FILE_NO = #{fileNo}
+        </if> 
+        <if test="fileName != null and fileName != ''">
+          AND UPPER(FILE_NAME) LIKE '%' + UPPER(#{fileName}) + '%'
+        </if>
+        <if test="fileExt != null and fileExt != ''">
+          AND FILE_EXT = UPPER(fileExt)
+        </if>
+        ORDER BY FILE_ID DESC,FILE_NO 
+       <include refid="ezsmart.inc.pagingFooter"/>
+        
+    </select>
+    <select id="selectFileInfo" resultType="EzMap">
+        /* FileSqlMapper - selectFileInfo */
+        SELECT FILE_ID
+             , FILE_NO
+             , FILE_NAME
+             , FILE_SIZE
+             , SAVE_NAME
+             , FILE_EXT
+             , MIME_TYPE
+             , REG_ID
+             , REG_DT
+             , MOD_ID
+             , MOD_DT
+       FROM ZZ_FILE_INFO_M
+      WHERE FILE_ID           =       #{fileId}
+        AND FILE_NO           =       #{fileNo}
+    </select>
+</mapper>

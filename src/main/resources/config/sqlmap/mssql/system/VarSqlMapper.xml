@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ezsmart.var">
+    
+    <select id="selectListCount" resultType="int">
+        /* VarSqlMapper.selectListCount */
+        SELECT COUNT(1)
+          FROM ZZ_COM_VAR_M A
+         WHERE 1=1
+         <if test="var != null and var != ''">
+          AND VAR_CD = #{varCd}
+         </if>  
+         <if test="value != null and value != ''">
+          AND VAR_VAL LIKE '%' + #{varVal} + '%'
+         </if>  
+    </select>
+    
+    <select id="selectList" resultType="EzMap">
+       /* VarSqlMapper.selectList */
+       SELECT VAR_CD
+            , VAR_VAL
+            , VAR_EXPL
+            , REG_ID
+            , REG_DT
+            , MOD_ID
+            , MOD_DT
+         FROM ZZ_COM_VAR_M
+        WHERE 1=1
+       <if test="var != null and var != ''">
+        AND VAR_CD = #{varCd}
+       </if>  
+       <if test="value != null and value != ''">
+        AND VAR_VAL LIKE '%' + #{varVal} + '%'
+       </if> 
+       
+    </select>
+   
+</mapper>

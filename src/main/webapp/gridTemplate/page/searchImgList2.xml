@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<grid id='grdDetail' desc='학습데이터 정보'>
+    <meta>
+        
+        <readonly       value="N" />             <!-- 읽기 전용여부 -->
+        <showCheckbox   value="N" />             <!-- 좌측 체크박스 표시여부 -->
+        <showNumber     value="Y" />             <!-- 좌측 번호컬럼 표시여부 -->
+        <rowSelection   value="N" />             <!-- 클릭시 전체 로우 선택여부 -->
+        <insertable     value="Y" />             <!-- 로우 삽입가능 여부 -->
+        <appendable     value="Y" />             <!-- 로우 추가가능 여부 -->
+        <editable       value="Y" />             <!-- 로우 추가가능 여부 -->
+        <deletable      value="Y" />             <!-- 로우 삭제 가능 여부 -->
+        <rollbackable   value="N" />             <!-- 로우 복구 가능 여부 -->
+        <gridfitStyle   value="even" />          <!-- 그리드 자동 맞춤 설정 -->
+        <columnMove     value="N" />             <!-- 그리드 컬럼이동 -->
+        <showHeaderSum  value="N" />             <!-- 헤더영역 합계표시 여부 -->
+        <showFooter     value="N" />             <!-- footer영역 여부 -->
+        <setSort        value="exclusive" />     <!-- 그리드 정렬 방식  기본값:none,  exclusive: 클릭한 컬럼, incusive: 클릭순으로 멀티 , revers: 마지막 클릭순으로 멀티    -->
+        <showStateBar   value="Y" />             <!-- 그리드 상태표시 여부 기본값:Y -->
+    </meta>
+    <!-- textAlignment : left:기본(좌측정렬), center:중앙정렬, right:우측정렬  -->
+    <column field='stdyDtaMngNo'    name='학습데이터관리번호'    type='char'  width='80' mstCd ="STDY_DTA_MNG_NO"   textAlignment='left' hidden="Y" />
+    <column field='seq'    name='일련번호'    type='int'  width='30' mstCd ="SEQ"   textAlignment='right' readOnly="Y" />
+    <column field='bndbxXMin'    name='X축최소값'    type='int'  width='80' mstCd ="BNDBX_X_MIN"   textAlignment='right' readOnly="Y"  />
+    <column field='bndbxYMin'    name='Y축최소값'    type='int'  width='80' mstCd ="BNDBX_Y_MIN"   textAlignment='right' readOnly="Y"  />
+    <column field='bndbxXMax'    name='X축최대값'    type='int'  width='80' mstCd ="BNDBX_X_MAX"   textAlignment='right' readOnly="Y"  />
+    <column field='bndbxYMax'    name='Y축최대값'    type='int'  width='80' mstCd ="BNDBX_Y_MAX"   textAlignment='right' readOnly="Y"  />
+    <column field='accr'    name='정확도'    type='char'  width='80' mstCd ="ACCR"   textAlignment='left' hidden="Y" />
+    <column field='objNm'    name='카테고리'    type='combo'  width='80'  mstCd ="OBJ_CD"  textAlignment='center'  readOnly="Y" />
+    <column field='rmk'      name='비고'    type='char'  width='150'  mstCd ="RMK"  textAlignment='left'  readOnly="Y" />
+</grid>

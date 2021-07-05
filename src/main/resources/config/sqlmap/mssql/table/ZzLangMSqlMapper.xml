@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ezsmart.ZzLangM">
+
+<!--
+ * 시스템명 : 테스트 프로젝트
+ * 생 성 자 : 정일찬
+ * 생 성 일 : 2020-11-24
+ -->
+
+
+
+
+<!-- 한건을 기준으로 insert를 실행합니다. -->
+<insert id="insertLangM">
+  INSERT INTO ZZ_LANG_M (
+                    GUBN_CD
+                  , LANG_GB
+                  , LANG_CD
+                  , LANG_NM
+                  , USE_YN
+                  , REG_ID
+                  , REG_DT
+                  , MOD_ID
+                  , MOD_DT
+                 ) VALUES (
+                    #{gubnCd}
+                  , #{langGb}
+                  <!-- , CASE WHEN #{gubnCd} = '10' THEN 'L_' + REPLICATE('0', 4-LEN(ISNULL((SELECT CONVERT(INT, SUBSTRING(MAX(LANG_CD), 3,4))+1 FROM ZZ_LANG_M), 1))) + ISNULL(CONVERT(CHAR, (SELECT CONVERT(INT, SUBSTRING(MAX(LANG_CD), 3, 4))+1 FROM ZZ_LANG_M)), 1)
+                         WHEN #{gubnCd} = '20' THEN 'M_' + REPLICATE('0', 4-LEN(ISNULL((SELECT CONVERT(INT, SUBSTRING(MAX(LANG_CD), 3,4))+1 FROM ZZ_LANG_M), 1))) + ISNULL(CONVERT(CHAR, (SELECT CONVERT(INT, SUBSTRING(MAX(LANG_CD), 3, 4))+1 FROM ZZ_LANG_M)), 1)
+                         ELSE '' 
+                         END -->
+                  , #{langCd}
+                  , #{langNm}
+                  , 'Y'
+                  , #{regId}
+                  , GETDATE()
+                  , #{modId}
+                  , GETDATE());
+</insert>
+
+<!-- 한건을 기준으로 update를 실행합니다. -->
+<update id="updateLangM">
+  UPDATE ZZ_LANG_M
+                  SET LANG_CD           =       #{langCd}
+                    , LANG_NM           =       #{langNm}
+                    , USE_YN            =       #{useYn}
+                    , MOD_ID            =       #{modId}
+                    , MOD_DT            =       GETDATE()
+                WHERE GUBN_CD           =       #{gubnCd}
+                  AND LANG_GB           =       #{langGb}
+                  AND LANG_CD           =       #{langCd}
+</update>
+
+<!-- 한건을 기준으로 delete를 실행합니다. -->
+<delete id="deleteLangM">
+   DELETE FROM ZZ_LANG_M
+                WHERE GUBN_CD           =       #{gubnCd}
+                  AND LANG_GB           =       #{langGb}
+                  AND LANG_CD           =       #{langCd}
+</delete>
+</mapper>
+

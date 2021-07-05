@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ezsmart.langM">
+    <sql id="sqlPkConditions">
+                WHERE CMPY_CD           =       #{cmpyCd}
+                  AND GUBN_CD           =       #{gubnCd}
+                  AND LANG_GB           =       #{langGb}
+                  AND LANG_CD           =       #{langCd}
+    </sql>
+    <sql id="sqlCols">
+                      CMPY_CD
+                    , GUBN_CD
+                    , LANG_GB
+                    , LANG_CD
+                    , LANG_NM
+                    , USE_YN
+                    , REG_ID
+                    , REG_DT
+                    , MOD_ID
+                    , MOD_DT
+    </sql>
+    <sql id="sqlConditions">
+                 FROM TB_LANG_M
+                WHERE 1 = 1
+        <if test="cmpyCd != null and cmpyCd != ''">
+                      AND CMPY_CD           =       #{cmpyCd}
+        </if>
+        <if test="gubnCd != null and gubnCd != ''">
+                      AND GUBN_CD           =       #{gubnCd}
+        </if>
+        <if test="langGb != null and langGb != ''">
+                      AND LANG_GB           =       #{langGb}
+        </if>
+        <if test="langCd != null and langCd != ''">
+                      AND LANG_CD           =       #{langCd}
+        </if>
+        <if test="langNm != null and langNm != ''">
+                      AND LANG_NM           LIKE    '%' || #{langNm} || '%'
+        </if>
+        <if test="useYn != null and useYn != ''">
+                      AND USE_YN            =       #{useYn}
+        </if>
+    </sql>
+    <select id="selectListCount" resultType="int">
+                SELECT COUNT(1)
+        <include refid="sqlConditions"/>
+    </select>
+    <select id="selectList" resultType="EzMap">
+        <include refid="ezsmart.inc.pagingHeader"/>
+               SELECT <include refid="sqlCols"/>
+        <include refid="sqlConditions"/>
+               ORDER BY LANG_CD,LANG_GB 
+        <include refid="ezsmart.inc.pagingFooter"/>
+    </select>
+    <select id="selectLangM" resultType="EzMap">
+               SELECT <include refid="sqlCols"/>
+        <include refid="sqlConditions"/>
+    </select>
+    <insert id="insertLangM">
+        <selectKey resultType="string" keyProperty="langCd" order="AFTER">
+            SELECT MAX(LANG_CD) FROM TB_LANG_M WHERE GUBN_CD =#{gubnCd}         
+        </selectKey>
+    
+                INSERT INTO TB_LANG_M (
+        <include refid="sqlCols"/>
+                 )SELECT
+                    '0000'
+                  , #{gubnCd}
+                  , CODE_ID
+                  , CONCAT(#{gubnCd},LPAD((SELECT NVL(TO_NUMBER(REGEXP_REPLACE(MAX(LANG_CD), '[^0-9]')),1)+1 FROM TB_LANG_M WHERE GUBN_CD =#{gubnCd}),'5','0'))
+                  , #{langNm}
+                  , 'Y'
+                  , #{regId}
+                  , SYSDATE
+                  , #{modId}
+                  , SYSDATE
+                 FROM TB_CODE 
+                 WHERE 
+                  CODE_LEVEL = '3' 
+                  AND UP_CODE_ID = '010' 
+                  AND ROOT_CODE_ID = '050'
+                  AND USE_YN ='Y'
+    </insert>
+    <update id="updateLangM">
+               UPDATE TB_LANG_M
+                  SET LANG_NM             =         #{langNm}
+                    , USE_YN              =         #{useYn}
+                    , MOD_ID              =         #{modId}
+                    , MOD_DT              =         SYSDATE
+        <include refid="sqlPkConditions"/>
+    </update>
+    <delete id="deleteLangM">
+               DELETE FROM TB_LANG_M
+        <include refid="sqlPkConditions"/>
+    </delete>
+</mapper>

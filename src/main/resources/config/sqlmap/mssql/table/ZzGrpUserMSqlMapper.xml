@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ezsmart.zzGrpUserM">
+<!-- ZZ_GRP_USER_M -->
+
+    <!-- 그룹사용자 추가 -->
+    <insert id="insertGroupUser">
+        /* ZZ_GRP_USER_M - insertGroupUser */
+        INSERT INTO ZZ_GRP_USER_M (
+               CMPY_CD
+             , GRP_ID
+             , USER_ID
+             , REG_ID
+             , REG_DT
+             , MOD_ID
+             , MOD_DT 
+         ) VALUES (
+               '0000'
+             , #{grpId}
+             , #{userId}
+             , #{regId}
+             , GETDATE()
+             , #{regId}
+             , GETDATE()
+         )
+    </insert>
+    
+    <!-- 그룹사용자 삭제 -->
+    <delete id="deleteGroupUser">
+       /* ZZ_GRP_USER_M - deleteGroupUser */
+       DELETE ZZ_GRP_USER_M
+        WHERE 1=1
+        <choose>
+            <when test="grpId != null and grpId != ''">
+          AND GRP_ID = #{grpId} 
+            </when>
+            <otherwise>
+          AND USER_ID = #{userId} 
+            </otherwise>
+        </choose>
+        <if test="userId != null and userId != ''">
+          AND USER_ID = #{userId} 
+        </if>
+        <if test="grpId != null and grpId != ''">
+          AND GRP_ID = #{grpId} 
+        </if>
+    </delete>
+</mapper>

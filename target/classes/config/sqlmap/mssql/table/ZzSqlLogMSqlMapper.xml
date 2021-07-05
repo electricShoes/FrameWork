@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ezsmart.zzSqlLogM">
+<!-- ZZ_SQL_LOG_M -->
+    
+    <insert id="insertSqlLog">
+        /* zzSqlLogM - insertSqlLog */
+        INSERT INTO ZZ_SQL_LOG_M (
+            LOG_SQL
+          , LOG_ID
+          , USER_ID
+          , STR_DT
+          , END_DT
+          , EXEC_TIME
+          , MENU_ID
+          , DAO_MTHD
+          , REG_ID
+          , REG_DT
+          , MOD_ID
+          , MOD_DT
+         ) VALUES (
+            #{logSql}
+          , #{logId}
+          , #{userId}
+          , #{strDt}
+          , #{endDt}
+          , #{execTime}
+          , #{menuId}
+          , #{daoMethod}
+          , #{regId}
+          , GETDATE()
+          , #{modId}
+          , GETDATE()
+         )
+    </insert>
+    
+    <update id="updateSqlLog">
+        /* zzSqlLogM - updateSqlLog */
+        UPDATE ZZ_SQL_LOG_M
+           SET LOG_SQL        =         #{logSql}
+             , USER_ID        =         #{userId}
+             , STR_DT         =         #{strDt}
+             , END_DT         =         #{endDt}
+             , EXEC_TIME      =         #{execTime}
+             , MENU_ID        =         #{menuId}
+             , DAO_MTHD       =         #{daoMethod}
+             , MOD_ID         =         #{modId}
+             , MOD_DT         =         GETDATE()
+         WHERE LOG_ID         =         #{logId}
+    </update>
+    
+    <delete id="deleteSqlLog">
+        /* zzSqlLogM - deleteSqlLog */
+        DELETE FROM ZZ_SQL_LOG_M
+         WHERE LOG_ID = #{logId}
+    </delete>
+</mapper>

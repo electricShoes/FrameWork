@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+	<bean name="propertiesService" class="egovframework.rte.fdl.property.impl.EgovPropertyServiceImpl" destroy-method="destroy">
+		<property name="properties">
+	       	<!-- 
+	        <map>
+	        	<entry key="pageUnit" value="10"/>
+	        	<entry key="pageSize" value="10"/>
+	        </map>
+	         -->
+	        <map>
+				<entry key="storage.root" value="/nas/files/" />
+				<entry key="storage.attachment" value="/nas/files/attachment/" />
+				<entry key="storage.temp" value="/nas/files/temp/" />
+
+				<entry key="currentPageNo" value="1" />
+				<entry key="recordCountPerPage" value="30" />
+				<entry key="pageSize" value="10" />
+				<entry key="urlSuffix" value=".do" />
+
+                <!-- Context 경로로 관리메뉴를 분리하도록 셋팅. 잠시 막아놓음. 박종영
+                <entry key="context.manage" value="/manage" />
+                -->
+                <!--
+                <entry key="context.manage" value="/admin" />
+                  -->
+                <entry key="context.manage" value="/EzSmart" />  
+                <entry key="tiles.manage" value="manage" />
+                <entry key="tiles.manage.blank" value="manage/blank" />
+                <entry key="tiles.manage.blankBody" value="manage/blankBody" />
+                
+                <entry key="tiles.page" value="page" />
+
+				<entry key="smtp.ssl" value="true" />
+				<entry key="smtp.host" value="smtp.mail.nate.com" />
+				<entry key="smtp.port" value="465" />
+				<entry key="smtp.sender.name" value="김성태" />
+				<entry key="smtp.sender.email" value="dopey@nate.com" />
+				<entry key="smtp.user" value="ba344fa96851c6a13a8ecb1531b488b3" />
+				<entry key="smtp.pwd" value="e7476278ad9bfa9346f82a1c91c3f245" />
+			</map>
+		</property>
+	</bean>
+	
+</beans>	

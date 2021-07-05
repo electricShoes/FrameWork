@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ezsmart.var.ZzComVarM">
+
+<!--
+ * 시스템명 : 테스트 프로젝트
+ * 생 성 자 : 안형기
+ * 생 성 일 : 2020-11-12
+ -->
+
+<!-- Row Count를 반환합니다. -->
+<select id="getRowCount" resultType="int">
+SELECT COUNT(1) CNT 
+  FROM ZZ_COM_VAR_M A WITH (NOLOCK)               /* 변수마스터 */
+ WHERE 1 = 1
+</select>
+
+<!-- 한건을 기준으로 select를 실행합니다. -->
+<select id="selectList" resultType="EzMap">
+SELECT 
+       A.VAR_CD                                   /* 변수 */
+     , A.VAR_VAL                                  /* 변수값 */
+     , A.VAR_EXPL                                 /* 설명 */
+     , A.REG_ID                                   /* 등록자아이디 */
+     , A.REG_DT                                   /* 등록일 */
+     , A.MOD_ID                                   /* 수정자아이디 */
+     , A.MOD_DT                                   /* 수정일 */
+  FROM ZZ_COM_VAR_M A WITH (NOLOCK)               /* 변수마스터 */
+ WHERE A.VAR_CD = #{varCd}
+</select>
+
+<!-- 한건을 기준으로 insert를 실행합니다. -->
+<insert id="insert">
+INSERT INTO ZZ_COM_VAR_M (                        /* 변수마스터 */
+       CMPY_CD
+     , VAR_CD                                     /* 변수 */
+     , VAR_VAL                                    /* 변수값 */
+     , VAR_EXPL                                   /* 설명 */
+     , REG_ID                                     /* 등록자아이디 */
+     , REG_DT                                     /* 등록일 */
+     , MOD_ID                                     /* 수정자아이디 */
+     , MOD_DT                                     /* 수정일 */
+) VALUES (
+       #{cmpyCd}
+     , #{varCd}
+     , #{varVal}
+     , #{varExpl}
+     , #{regId}
+     , GETDATE()
+     , #{modId}
+     , GETDATE()
+)
+</insert>
+
+<!-- 한건을 기준으로 update를 실행합니다. -->
+<update id="update">
+UPDATE ZZ_COM_VAR_M SET                           /* 변수마스터 */
+       VAR_VAL = #{varVal}                        /* 변수값 */
+     , VAR_EXPL = #{varExpl}                      /* 설명 */
+     , MOD_ID = #{modId}                          /* 수정자아이디 */
+     , MOD_DT = GETDATE()                         /* 수정일 */
+ WHERE CMPY_CD = #{cmpyCd}
+   AND VAR_CD  = #{varCd}
+</update>
+
+<!-- 한건을 기준으로 delete를 실행합니다. -->
+<delete id="delete">
+DELETE FROM   ZZ_COM_VAR_M                        /* 변수마스터 */
+ WHERE CMPY_CD = #{cmpyCd}
+   AND VAR_CD = #{varCd}
+</delete>
+
+</mapper>
+

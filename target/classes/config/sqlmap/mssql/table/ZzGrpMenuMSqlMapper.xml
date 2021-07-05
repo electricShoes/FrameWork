@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ezsmart.zzGrpMenuM">
+<!-- ZZ_GRP_MENU_M -->
+    
+    <!-- 그룹메뉴 추가 -->
+    <insert id="insertGroupMenu">
+        /* ZZ_GRP_MENU_M - insertGroupMenu */
+        INSERT INTO ZZ_GRP_MENU_M (
+               CMPY_CD
+             , GRP_ID
+             , MENU_ID
+             , MENU_AUTH_C
+             , MENU_AUTH_R
+             , MENU_AUTH_U
+             , MENU_AUTH_D
+             , REG_ID
+             , REG_DT
+             , MOD_ID
+             , MOD_DT 
+         ) VALUES (
+               '0000'
+             , #{grpId}
+             , #{menuId}
+             , CASE WHEN #{menuAuthC} = NULL 
+                    THEN 'Y' 
+                    ELSE 'N' END
+             , CASE WHEN #{menuAuthR} = NULL 
+                    THEN 'Y' 
+                    ELSE 'N' END
+             , CASE WHEN #{menuAuthU} = NULL 
+                    THEN 'Y' 
+                    ELSE 'N' END
+             , CASE WHEN #{menuAuthD} = NULL 
+                    THEN 'Y' 
+                    ELSE 'N' END
+             , #{modId}
+             , GETDATE()
+             , #{regId}
+             , GETDATE()
+         )
+    </insert>
+    
+    <!-- 그룹메뉴 수정 -->
+    <update id="updateGroupMenu">
+       /* ZZ_GRP_MENU_M - updateGroupMenu */
+       UPDATE ZZ_GRP_MENU_M
+          SET   MENU_AUTH_C          =         #{menuAuthC}
+              , MENU_AUTH_R          =         #{menuAuthR}
+              , MENU_AUTH_U          =         #{menuAuthU}
+              , MENU_AUTH_D          =         #{menuAuthD}
+              , MOD_ID               =         #{modId}
+              , MOD_DT               =         GETDATE()
+          WHERE GRP_ID               =         #{grpId}
+            AND MENU_ID              =         #{menuId}
+    </update>
+    
+    <!-- 그룹메뉴 삭제 -->
+    <delete id="deleteGroupMenu">
+       /* ZZ_GRP_MENU_M - deleteGroupMenu */
+       DELETE ZZ_GRP_MENU_M
+        WHERE 1=1
+        <choose>
+            <when test="grpId != null and grpId != ''">
+          AND GRP_ID = #{grpId} 
+            </when>
+            <otherwise>
+          AND MENU_ID = #{menuId} 
+            </otherwise>
+        </choose>
+        <if test="menuId != null and menuId != ''">
+          AND MENU_ID = #{menuId} 
+        </if>
+        <if test="grpId != null and grpId != ''">
+          AND GRP_ID = #{grpId} 
+        </if>
+    </delete>
+</mapper>

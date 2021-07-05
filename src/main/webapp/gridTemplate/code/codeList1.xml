@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<grid id='grdList' desc='공통코드'>
+    <meta>
+        
+        <readonly       value="N" />             <!-- 읽기 전용여부 -->
+        <showCheckbox   value="Y" />             <!-- 좌측 체크박스 표시여부 -->
+        <showNumber     value="Y" />             <!-- 좌측 번호컬럼 표시여부 -->
+        <rowSelection   value="N" />             <!-- 클릭시 전체 로우 선택여부 -->
+        <insertable     value="Y" />             <!-- 로우 삽입가능 여부 -->
+        <appendable     value="Y" />             <!-- 로우 추가가능 여부 -->
+        <editable       value="Y" />             <!-- 로우 추가가능 여부 -->
+        <deletable      value="Y" />             <!-- 로우 삭제 가능 여부 -->
+        <rollbackable   value="N" />             <!-- 로우 복구 가능 여부 -->
+        <gridfitStyle   value="even" />          <!-- 그리드 자동 맞춤 설정 -->
+        <columnMove     value="N" />             <!-- 그리드 컬럼이동 -->
+        <showHeaderSum  value="N" />             <!-- 헤더영역 합계표시 여부 -->
+        <showFooter     value="N" />             <!-- footer영역 여부 -->
+        <setSort        value="exclusive" />     <!-- 그리드 정렬 방식  기본값:none,  exclusive: 클릭한 컬럼, incusive: 클릭순으로 멀티 , revers: 마지막 클릭순으로 멀티    -->
+        <showStateBar   value="Y" />             <!-- 그리드 상태표시 여부 기본값:Y -->
+    </meta>
+    <!-- textAlignment : left:기본(좌측정렬), center:중앙정렬, right:우측정렬  -->
+    <column field='mstCd'    readOnly="Y"  required="Y"   name='코드ID'    type='char'  maxLength="10"       width='80' Pk = 'Y'   textAlignment='left'/>
+    <column field='mstNm'    name='코드명' required="Y"        type='char'  maxLength="100"      width='120'    textAlignment='left'/>
+    <column field='useYn'    name='코드사용여부' defaultValue="Y"   type='combo' width='80' mstCd ="USE_YN" textAlignment='center'/>
+    <group name="참조필드명" direction="H" title="참조필드명" >
+    <column field='refFldNm1'          name='참조필드명1'      type='char'         width='80'    textAlignment='left'/>
+    <column field='refFldNm2'          name='참조필드명2'      type='char'         width='80'    textAlignment='left'/>
+    <column field='refFldNm3'          name='참조필드명3'      type='char'         width='80'    textAlignment='left'/>
+    <column field='refFldNm4'          name='참조필드명4'      type='char'         width='80'    textAlignment='left'/>
+    <column field='refFldNm5'          name='참조필드명5'      type='char'         width='80'    textAlignment='left'/>
+    </group> 
+    <group name="참조숫자명" direction="H" title="참조숫자명" > 
+    <column field='refNumNm1'          name='참조숫자명1'  type='char'     width='80'    textAlignment='left' />
+    <column field='refNumNm2'          name='참조숫자명2'  type='char'     width='80'    textAlignment='left' />
+    <column field='refNumNm3'          name='참조숫자명3'  type='char'     width='80'    textAlignment='left' />
+    <column field='refNumNm4'          name='참조숫자명4'  type='char'     width='80'    textAlignment='left' />
+    <column field='refNumNm5'          name='참조숫자명5'  type='char'     width='80'    textAlignment='left' />
+    </group>
+    
+</grid>

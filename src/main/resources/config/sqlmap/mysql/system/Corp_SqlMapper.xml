@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ezsmart.corp">
+
+<select id="selectListCount" resultType="int">
+SELECT COUNT(1) CNT 
+  FROM ZZ_CORP_M A                   /* 법인정보 */
+ WHERE 1 = 1
+</select>
+
+   <select id="selectList" resultType="EzMap">
+      
+        SELECT CMPY_CD
+             , CMPY_EN_NM
+             , CORP_NM
+             , AITM_CD
+             , TEL_NO
+             , FAX_NO
+             , TPIS_CD
+             , HOME_PAGE
+             , ESTB_DT
+             , REP_CRFR_NO
+             , ZIP_NO
+             , PBZ_ADR
+             , PBZ_DTL_ADR
+             , REG_ID
+             , REG_DT
+             , MOD_ID
+             , MOD_DT
+             , BIZR_REG_NO
+             , CMPY_NM
+             , CORP_SSN
+             , REP_NM
+          FROM ZZ_CORP_M
+         WHERE 1=1
+         <if test="srchBizrRegNo != null and srchBizrRegNo != ''">
+           AND BIZR_REG_NO = #{srchBizrRegNo}
+         </if>
+         
+         <if test="srchCmpyNm != null and srchCmpyNm != ''">
+           AND CMPY_NM LIKE '%' + #{srchCmpyNm} + '%'
+         </if>
+         
+         <if test="srchCorpSsn != null and srchCorpSsn != ''">
+           AND CORP_SSN = #{srchCorpSsn}
+         </if>
+         
+         <if test="srchRepNm != null and srchRepNm != ''">
+           AND REP_NM = #{srchRepNm}
+         </if>
+    </select>
+    
+</mapper>

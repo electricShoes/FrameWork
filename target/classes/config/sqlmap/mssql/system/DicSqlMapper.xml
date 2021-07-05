@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ezsmart.dic">
+    
+    <select id="selectListCount" resultType="int">
+        /* DicSqlMapper.selectListCount */
+        SELECT COUNT(1)
+          FROM ZZ_DIC_M A
+         WHERE 1=1
+         <if test="dicKo != null and dicKo != ''">
+          AND DIC_KO  LIKE '%' + #{dicKo} + '%'
+         </if>  
+         <if test="dicAbb != null and dicAbb != ''">
+          AND DIC_ABB LIKE '%' + #{dicAbb} + '%'
+         </if>  
+    </select>
+    
+    <select id="selectList" resultType="EzMap">
+       /* DicSqlMapper.selectList */
+       SELECT DIC_KO
+            , DIC_EN
+            , DIC_ABB
+            , DIC_EXPL
+            , REG_ID
+            , REG_DT
+            , MOD_ID
+            , MOD_DT
+         FROM ZZ_DIC_M
+        WHERE 1=1
+       <if test="dicKo != null and dicKo != ''">
+          AND DIC_KO  LIKE '%' + #{dicKo} + '%'
+         </if>  
+         <if test="dicAbb != null and dicAbb != ''">
+          AND DIC_ABB LIKE '%' + #{dicAbb} + '%'
+         </if>  
+       
+    </select>
+    
+</mapper>

@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ezsmart.page.TbAiStdRslI">
+
+<!--
+ * 시스템명 : MWRS
+ * 생 성 자 : 전성기
+ * 생 성 일 : 2021-01-20
+ -->
+
+<!-- Row Count를 반환합니다. -->
+<select id="getRowCount" resultType="int">
+SELECT COUNT(1) CNT 
+  FROM TB_AI_STD_RSL_I A                   /* 공통코드상세 */
+ WHERE 1 = 1
+</select>
+
+<!-- 한건을 기준으로 select를 실행합니다. -->
+<select id="selectList" resultType="EzMap">
+SELECT 
+       A.STDY_DTA_MNG_NO                        /* 회사코드 */
+     , A.SEQ                                    /* 마스터코드 */
+     , A.OBJ_NM                                 /* 상세코드 */
+     , A.BNDBX_X_MIN                            /* 상세코드명 */
+     , A.BNDBX_Y_MIN                            /* 사용여부 */
+     , A.BNDBX_X_MAX                            /* 참조코드1 */
+     , A.BNDBX_Y_MAX                            /* 참조코드2 */
+     , A.ACCR                                   /* 참조코드3 */
+     , A.RMK                                    /* 참조코드4 */
+  FROM TB_AI_STD_RSL_I A                    /* 학습데이터결과정보 */
+ WHERE 1=1
+   <if test="stdyDtaMngNo != null and stdyDtaMngNo != ''">
+   AND A.STDY_DTA_MNG_NO = #{stdyDtaMngNo}
+   </if>
+   <if test="objNm != null and objNm != ''">
+   AND A.OBJ_NM = #{objNm}
+   </if> 
+</select>
+
+<!-- 한건을 기준으로 insert를 실행합니다. -->
+<insert id="insert">
+INSERT INTO TB_AI_STD_RSL_I (                           /* 공통코드상세 */
+       CMPY_CD                                    /* 회사코드 */
+     , MST_CD                                     /* 마스터코드 */
+     , DTL_CD                                     /* 상세코드 */
+     , DTL_NM                                     /* 상세코드명 */
+     , USE_YN                                     /* 사용여부 */
+     , REF_CD1                                    /* 참조코드1 */
+     , REF_CD2                                    /* 참조코드2 */
+     , REF_CD3                                    /* 참조코드3 */
+     , REF_CD4                                    /* 참조코드4 */
+     , REF_CD5                                    /* 참조코드5 */
+     , REF_NUM1                                   /* 참조숫자1 */
+     , REF_NUM2                                   /* 참조숫자2 */
+     , REF_NUM3                                   /* 참조숫자3 */
+     , REF_NUM4                                   /* 참조숫자4 */
+     , REF_NUM5                                   /* 참조숫자5 */
+     , SORT_SEQ                                   /* 정렬순번 */
+     , REG_ID                                     /* 등록자아이디 */
+     , REG_DT                                     /* 등록일 */
+     , MOD_ID                                     /* 수정자아이디 */
+     , MOD_DT                                     /* 수정일 */
+) VALUES (
+       '0000'
+     , #{mstCd}
+     , #{dtlCd}
+     , #{dtlNm}
+     , #{useYn}
+     , #{refCd1}
+     , #{refCd2}
+     , #{refCd3}
+     , #{refCd4}
+     , #{refCd5}
+     , #{refNum1}
+     , #{refNum2}
+     , #{refNum3}
+     , #{refNum4}
+     , #{refNum5}
+     , #{sortSeq}
+     , #{regId}
+     , NOW()
+     , #{modId}
+     , NOW()
+)
+</insert>
+
+<!-- 한건을 기준으로 update를 실행합니다. -->
+<update id="update">
+UPDATE TB_AI_STD_RSL_I SET                              /* 공통코드상세 */
+       DTL_NM = #{dtlNm}                          /* 상세코드명 */
+     , USE_YN = #{useYn}                          /* 사용여부 */
+     , REF_CD1 = #{refCd1}                        /* 참조코드1 */
+     , REF_CD2 = #{refCd2}                        /* 참조코드2 */
+     , REF_CD3 = #{refCd3}                        /* 참조코드3 */
+     , REF_CD4 = #{refCd4}                        /* 참조코드4 */
+     , REF_CD5 = #{refCd5}                        /* 참조코드5 */
+     , REF_NUM1 = #{refNum1}                      /* 참조숫자1 */
+     , REF_NUM2 = #{refNum2}                      /* 참조숫자2 */
+     , REF_NUM3 = #{refNum3}                      /* 참조숫자3 */
+     , REF_NUM4 = #{refNum4}                      /* 참조숫자4 */
+     , REF_NUM5 = #{refNum5}                      /* 참조숫자5 */
+     , SORT_SEQ = #{sortSeq}                      /* 정렬순번 */
+     , MOD_ID = #{modId}                          /* 수정자아이디 */
+     , MOD_DT = NOW()                         /* 수정일 */
+ WHERE MST_CD = #{mstCd}
+   AND DTL_CD = #{dtlCd}
+</update>
+
+<!-- 한건을 기준으로 delete를 실행합니다. -->
+<delete id="delete">
+DELETE FROM   TB_AI_STD_RSL_I                           /* 공통코드상세 */
+ WHERE MST_CD = #{mstCd}
+   AND DTL_CD = #{dtlCd}
+</delete>
+
+<select id="selectCodeCombo" resultType="EzMap">
+SELECT /*selectCodeCombo*/
+       A.DTL_CD
+     , A.DTL_NM  
+  FROM TB_AI_STD_RSL_I A                   /* 공통코드상세 */
+ WHERE A.MST_CD = #{mstCd}
+ ORDER BY SORT_SEQ
+</select>
+
+
+
+<!-- mdj시작 -->
+
+<insert id="saveImgMasterPopupDList">
+    <selectKey order="BEFORE" keyProperty="seqNum" resultType="int">
+        SELECT IFNULL(MAX(SEQ),0) + 1 AS seqNum
+        FROM TB_AI_STD_RSL_I
+        WHERE STDY_DTA_MNG_NO = #{stdyDtaMngNo}
+    </selectKey>
+    /*saveImgMasterPopupDList*/
+    INSERT INTO TB_AI_STD_RSL_I(
+         STDY_DTA_MNG_NO
+        ,SEQ
+        ,OBJ_NM
+        ,BNDBX_X_MIN
+        ,BNDBX_Y_MIN
+        ,BNDBX_X_MAX
+        ,BNDBX_Y_MAX
+        ,RMK
+        ,REG_ID
+        ,REG_DT
+        ,MOD_ID
+        ,MOD_DT
+    )VALUES(
+         #{stdyDtaMngNo}
+        ,#{seqNum}
+        ,#{objNm}
+        ,#{bndbxXMin}
+        ,#{bndbxYMin}
+        ,#{bndbxXMax}
+        ,#{bndbxYMax}
+        ,#{rmk}
+        ,#{regId}
+        ,NOW()
+        ,#{modId}
+        ,NOW()
+    )
+</insert>
+
+<delete id="deleteImgMasterPopupDList">
+    /*deleteImgMasterPopupDList*/
+    DELETE FROM TB_AI_STD_RSL_I
+    WHERE STDY_DTA_MNG_NO =  #{stdyDtaMngNo}
+</delete>
+
+<!-- 끝 -->
+
+</mapper>
+

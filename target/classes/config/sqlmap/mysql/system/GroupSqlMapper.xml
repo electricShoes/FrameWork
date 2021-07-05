@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ezsmart.group">
+<!-- 사용자별 권한 메뉴 가져오기 -->
+    
+    <!-- 리스트 개수 조회 -->
+    <select id="selectListCount" resultType="int">
+        /* Group_SqlMapper - selectListCount */
+        SELECT COUNT(1) CNT
+          FROM ZZ_GRP_M A
+         WHERE 1=1
+         <if test="grpId != null and grpId != ''">
+           AND GRP_ID LIKE '%' + #{grpId} + '%'
+         </if>  
+         <if test="grpNm != null and grpNm != ''">
+           AND GRP_NM LIKE '%' + #{grpNm} + '%'
+         </if>
+         <if test="userId != null and userId != ''">
+           AND GRP_ID IN (SELECT GRP_ID FROM ZZ_GRP_USER_M WHERE USER_ID = #{userId})
+         </if>
+         <if test="exUserId != null and exUserId != ''">
+           AND GRP_ID NOT IN (SELECT GRP_ID FROM ZZ_GRP_USER_M WHERE USER_ID = #{exUserId})
+          </if>
+          <if test="menuId != null and menuId != ''">
+           AND GRP_ID IN (SELECT GRP_ID FROM ZZ_GRP_MENU_M WHERE MENU_ID = #{menuId})
+          </if>
+          <if test="exMenuId != null and exMenuId != ''">
+           AND GRP_ID NOT IN (SELECT GRP_ID FROM ZZ_GRP_MENU_M WHERE MENU_ID = #{exMenuId})
+          </if>
+    </select>
+    
+    <!-- 그룹 조회 -->
+    <select id="selectList" resultType="EzMap">
+       /* Group_SqlMapper - selectList */ 
+       SELECT CMPY_CD
+            , GRP_ID
+            , GRP_NM
+            , REG_ID
+            , REG_DT
+            , MOD_ID
+            , MOD_DT
+         FROM ZZ_GRP_M A
+        WHERE 1=1
+         <if test="grpId != null and grpId != ''">
+           AND GRP_ID LIKE '%' + #{grpId} + '%'
+         </if>  
+         <if test="grpNm != null and grpNm != ''">
+           AND GRP_NM LIKE '%' + #{grpNm} + '%'
+         </if>
+         <if test="userId != null and userId != ''">
+           AND GRP_ID IN (SELECT GRP_ID FROM ZZ_GRP_USER_M WHERE USER_ID = #{userId})
+         </if>
+         <if test="exUserId != null and exUserId != ''">
+           AND GRP_ID NOT IN (SELECT GRP_ID FROM ZZ_GRP_USER_M WHERE USER_ID = #{exUserId})
+          </if>
+          <if test="menuId != null and menuId != ''">
+           AND GRP_ID IN (SELECT GRP_ID FROM ZZ_GRP_MENU_M WHERE MENU_ID = #{menuId})
+          </if>
+          <if test="exMenuId != null and exMenuId != ''">
+           AND GRP_ID NOT IN (SELECT GRP_ID FROM ZZ_GRP_MENU_M WHERE MENU_ID = #{exMenuId})
+          </if>
+         ORDER BY GRP_ID
+    </select>
+    
+    <!-- 그룹에 해당하는 사용자 수 조회 -->
+    <select id="selectGroupUserCount" resultType="int">
+        /* Group_SqlMapper - selectGroupUserCount */
+        SELECT COUNT(1) CNT
+         FROM ZZ_GRP_M A
+            , ZZ_GRP_USER_M B
+            , ZZ_USER_M C
+        WHERE A.GRP_ID = B.GRP_ID
+          AND B.USER_ID = C.USER_ID
+         <choose>
+            <when test="exGrpId != null and exGrpId != ''">
+          AND A.GRP_ID != #{exGrpId}
+            </when>
+            <otherwise>
+          AND A.GRP_ID = #{grpId}
+            </otherwise>
+         </choose> 
+          AND C.DEL_YN = 'N'
+    </select>
+    
+    <!-- 그룹 권한 체크 조회 -->
+    <select id="selectGroupCheckList" resultType="EzMap">
+        /* Group_SqlMapper - selectGroupCheckList */
+        SELECT A.GRP_ID
+             , A.GRP_NM
+             , CASE WHEN LENGTH(NVL(B.GRP_ID,C.GRP_ID)) = 0 THEN 'N' ELSE 'Y' END CHECK_YN
+          FROM ZZ_GRP_M A
+          LEFT JOIN ZZ_GRP_USER_M B ON A.GRP_ID = B.GRP_ID AND B.USER_ID = #{userId}
+          LEFT JOIN ZZ_GRP_MENU_M C ON A.GRP_ID = C.GRP_ID AND C.MENU_ID = #{menuId}
+    </select>
+    
+    <!-- 그룹 사용자 조회 -->
+    <select id="selectGroupUserList" resultType="EzMap">
+       /* Group_SqlMapper - selectGroupUserList */
+       SELECT A.GRP_ID
+            , C.USER_ID
+            , C.USER_ID
+            , C.USER_NM
+            , C.EML_ADR
+         FROM ZZ_GRP_M A
+            , ZZ_GRP_USER_M B
+            , ZZ_USER_M C
+        WHERE A.GRP_ID = B.GRP_ID
+          AND B.USER_ID = C.USER_ID
+         <choose>
+            <when test="exGrpId != null and exGrpId != ''">
+          AND A.GRP_ID != #{exGrpId}
+            </when>
+            <otherwise>
+          AND A.GRP_ID = #{grpId}
+            </otherwise>
+         </choose> 
+          AND C.DEL_YN = 'N'
+        ORDER BY C.USER_ID
+        
+    </select>
+    
+    <!-- 그룹 메뉴 개수 조회 -->
+    <select id="selectGroupMenuCount" resultType="int">
+        /* Group_SqlMapper - selectGroupMenuCount */
+        SELECT COUNT(1) CNT
+         FROM ZZ_GRP_M A
+            , ZZ_GRP_MENU_M B
+            , ZZ_MENU_M C
+        WHERE A.GRP_ID = B.GRP_ID
+          AND B.MENU_ID = C.MENU_ID
+         <choose>
+            <when test="exGrpId != null and exGrpId != ''">
+          AND A.GRP_ID != #{exGrpId}
+            </when>
+            <otherwise>
+          AND A.GRP_ID = #{grpId}
+            </otherwise>
+         </choose> 
+          AND C.MENU_URL IS NOT NULL
+          AND C.MENU_AUTH_YN = 'Y'
+    </select>
+    
+    <!-- 그룹에 속한 메뉴 조회 -->
+    <select id="selectGroupMenuList" resultType="EzMap">
+       /* Group_SqlMapper - selectGroupMenuList */    
+       SELECT A.GRP_ID
+            , C.MENU_ID
+            , C.MENU_NM
+            , C.MENU_URL
+            , C.ROOT_MENU_ID
+            , B.MENU_AUTH_C
+            , B.MENU_AUTH_R
+            , B.MENU_AUTH_U
+            , B.MENU_AUTH_D
+         FROM ZZ_GRP_M A
+            , ZZ_GRP_MENU_M B
+            , ZZ_MENU_M C
+        WHERE A.GRP_ID = B.GRP_ID
+          AND B.MENU_ID = C.MENU_ID
+          <choose>
+            <when test="exGrpId != null and exGrpId != ''">
+          AND A.GRP_ID != #{exGrpId}
+            </when>
+            <otherwise>
+          AND A.GRP_ID = #{grpId}
+            </otherwise>
+         </choose> 
+          AND C.MENU_URL IS NOT NULL
+          AND C.MENU_AUTH_YN = 'Y'
+        ORDER BY C.MENU_ID
+    </select>
+    
+    <!-- 그룹 조회 -->
+    <select id="selectGroup" resultType="EzMap">
+        /* Group_SqlMapper - selectGroup */
+        SELECT CMPY_CD
+             , GRP_ID
+             , GRP_NM
+             , REG_ID
+             , REG_DT
+             , MOD_ID
+             , MOD_DT
+          FROM ZZ_GRP_M
+         WHERE GRP_ID = #{grpId}
+    </select>
+    
+    <!-- 그룹 수정 -->
+    <update id="updateGroup">
+       /* Group_SqlMapper - updateGroup */
+       UPDATE ZZ_GRP_M
+          SET GRP_NM  = #{grpNm}
+            , MOD_ID  = #{modId}
+            , MOD_DT  = NOW()
+        WHERE GRP_ID  = #{grpId}
+    </update>
+    
+    <!-- 그룹 추가 -->
+    <insert id="insertGroup">
+        /* Group_SqlMapper - insertGroup */
+        INSERT INTO ZZ_GRP_M (
+               CMPY_CD
+             , GRP_ID
+             , GRP_NM
+             , REG_ID
+             , REG_DT
+             , MOD_ID
+             , MOD_DT
+         ) VALUES (
+               '0000'
+             , #{grpId}
+             , #{grpNm}
+             , #{modId}
+             , NOW()
+             , #{regId}
+             , NOW()
+         )
+    </insert>
+    
+    <!-- 그룹 메뉴 추가 -->
+    <insert id="insertGroupMenu">
+        /* Group_SqlMapper - insertGroupMenu */
+        INSERT INTO ZZ_GRP_MENU_M (
+               CMPY_CD
+             , GRP_ID
+             , MENU_ID
+             , MENU_AUTH_C
+             , MENU_AUTH_R
+             , MENU_AUTH_U
+             , MENU_AUTH_D
+             , REG_ID
+             , REG_DT
+             , MOD_ID
+             , MOD_DT 
+         ) VALUES (
+               '0000'
+             , #{grpId}
+             , #{menuId}
+             , CASE WHEN #{menuAuthC} = NULL 
+                    THEN 'Y' 
+                    ELSE 'N' END
+             , CASE WHEN #{menuAuthR} = NULL 
+                    THEN 'Y' 
+                    ELSE 'N' END
+             , CASE WHEN #{menuAuthU} = NULL 
+                    THEN 'Y' 
+                    ELSE 'N' END
+             , CASE WHEN #{menuAuthD} = NULL 
+                    THEN 'Y' 
+                    ELSE 'N' END
+             , #{modId}
+             , NOW()
+             , #{regId}
+             , NOW()
+         )
+    </insert>
+    
+    <!-- 그룹 메뉴 수정 -->
+    <update id="updateGroupMenu">
+       /* Group_SqlMapper - updateGroupMenu */
+       UPDATE ZZ_GRP_MENU_M
+          SET   MENU_AUTH_C          =         #{menuAuthC}
+              , MENU_AUTH_R          =         #{menuAuthR}
+              , MENU_AUTH_U          =         #{menuAuthU}
+              , MENU_AUTH_D          =         #{menuAuthD}
+              , MOD_ID               =         #{modId}
+              , MOD_DT               =         NOW()
+          WHERE GRP_ID               =         #{grpId}
+            AND MENU_ID              =         #{menuId}
+    </update>
+    
+    <!-- 그룹 사용자 추가 -->
+    <insert id="insertGroupUser">
+        /* Group_SqlMapper - insertGroupUser */
+        INSERT INTO ZZ_GRP_USER_M (
+               CMPY_CD
+             , GRP_ID
+             , USER_ID
+             , REG_ID
+             , REG_DT
+             , MOD_ID
+             , MOD_DT 
+         ) VALUES (
+               '0000'
+             , #{grpId}
+             , #{userId}
+             , #{regId}
+             , NOW()
+             , #{regId}
+             , NOW()
+         )
+    </insert>
+    
+    <!-- 그룹 삭제 -->
+    <delete id="deleteGroup">
+       /* Group_SqlMapper - deleteGroup */
+       DELETE ZZ_GRP_M
+        WHERE GRP_ID = #{grpId}
+    </delete>
+    
+    <!-- 그룹 메뉴 삭제 -->
+    <delete id="deleteGroupMenu">
+       /* Group_SqlMapper - deleteGroupMenu */
+       DELETE FROM ZZ_GRP_MENU_M
+        <where>
+        <choose>
+            <when test="grpId != null and grpId != ''">
+          AND GRP_ID = #{grpId} 
+            </when>
+            <otherwise>
+          AND MENU_ID = #{menuId} 
+            </otherwise>
+        </choose>
+        <if test="menuId != null and menuId != ''">
+          AND MENU_ID = #{menuId} 
+        </if>
+        <if test="grpId != null and grpId != ''">
+          AND GRP_ID = #{grpId} 
+        </if>
+        </where>
+    </delete>
+    
+    <!-- 그룹 사용자 삭제 -->
+    <delete id="deleteGroupUser">
+       /* Group_SqlMapper - deleteGroupUser */
+       DELETE FROM ZZ_GRP_USER_M
+        <where>
+        <choose>
+            <when test="grpId != null and grpId != ''">
+          AND GRP_ID = #{grpId} 
+            </when>
+            <otherwise>
+          AND USER_ID = #{userId} 
+            </otherwise>
+        </choose>
+        <if test="userId != null and userId != ''">
+          AND USER_ID = #{userId} 
+        </if>
+        <if test="grpId != null and grpId != ''">
+          AND GRP_ID = #{grpId} 
+        </if>
+        </where>
+    </delete>
+</mapper>

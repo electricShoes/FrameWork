@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ezsmart.user">
+    <sql id="sqlPkConditions">
+        <choose>
+        <when test="userId !=null and userId !=''">
+        <!-- WHERE  USER_ID           =       #{userId} -->
+        WHERE  EMP_NO           =       #{userId}
+        </when>
+        <otherwise>
+        <!-- WHERE LOGIN_ID          = #{loginId} -->
+        WHERE USER_ID          = #{loginId}
+        </otherwise>
+    </choose>
+    </sql>
+    <sql id="sqlCols">
+              <!-- USER_ID
+            , LOGIN_ID -->
+              EMP_NO
+            , USER_ID
+            , PWD
+            , USER_NM
+            , '' as EMAIL  
+            , PWD_CHG_DT
+            , 0 as LOGIN_FAIL_CNT
+            , LANG_GB
+            , DEL_YN
+            , 0 as MOBILE_NO
+            , 'Y' as EMAIL_AUTH_YN
+            , 'Y' as MOBILE_AUTH_YN
+            , NICE_AUTH_KEY
+            , '' as LAST_LOGIN_DT
+            , '' as PWD_EXPIRE_DT
+            , REG_ID
+            , REG_DT
+            , MOD_ID
+            , MOD_DT
+    </sql>
+    <sql id="sqlConditions">
+        <!-- FROM ZZ_USER A -->
+        FROM ZZ_USER_M A
+         WHERE 1=1
+        <if test="userId != null and userId != ''">
+          <!-- AND USER_ID = #{userId} -->
+          AND EMP_NO = #{userId}
+        </if>  
+        <if test="loginId != null and loginId != ''">
+          <!-- AND LOGIN_ID = #{loginId} -->
+          AND USER_ID = #{loginId}
+        </if> 
+        <if test="loginPwd != null  and loginPwd != ''" >
+          AND PWD = #{loginPwd}
+        </if>
+        <if test="userName != null and userName != ''">
+          AND USER_NM LIKE '%' || #{userName} || '%'
+        </if>
+        <if test="mobileNo != null and mobileNo != ''">
+          AND MOBILE_NO LIKE '%' || #{mobileNo} || '%'
+        </if>
+         <if test="userEmail != null and userEmail != ''">
+          AND EMAIL = #{userEmail}
+        </if>
+        <if test="exGroupId != null and exGroupId != ''">
+           AND USER_ID NOT IN (SELECT USER_ID FROM ZZ_GROUP_USER WHERE GROUP_ID = #{exGroupId})
+           AND DEL_YN  = 'N'
+         </if>
+         <if test="groupId != null and groupId != ''">
+           AND USER_ID IN (SELECT USER_ID FROM ZZ_GROUP_USER WHERE GROUP_ID = #{groupId})
+           AND DEL_YN  = 'N'
+         </if>
+    </sql>
+    
+    
+    
+    <select id="selectListCount" resultType="int">
+        SELECT COUNT(1)
+        <include refid="sqlConditions" />
+    </select>
+    <select id="selectList" resultType="EzMap">
+        <include refid="ezsmart.inc.pagingHeader"/>
+       SELECT <include refid="sqlCols"/>
+       <include refid="sqlConditions"/>
+       <!-- ORDER BY LOGIN_ID -->
+       ORDER BY USER_ID
+        <include refid="ezsmart.inc.pagingFooter"/>
+    </select>
+    <select id="selectUser" resultType="EzMap">
+        SELECT <include refid="sqlCols" />
+       <!-- FROM ZZ_USER -->
+       FROM ZZ_USER_M
+      <include refid="sqlPkConditions" />
+    </select>
+    <update id="updateUser">
+       <!-- UPDATE ZZ_USER -->
+       UPDATE ZZ_USER_M
+         SET  USER_NM              =         #{userName}
+            , EMAIL                =         #{userEmail}   
+            , LANG_GB              =         NVL(#{userLang},LANG_GB)
+            , MOBILE_NO            =         #{mobileNo}
+            , EMAIL_AUTH_YN        =         #{emailAuthYn}
+            , MOBILE_AUTH_YN       =         #{mobileAuthYn}
+            , NICE_AUTH_KEY        =         #{niceAuthKey}
+            , PWD_EXPIRE_DT        =         #{pwdExpireDt}
+            , DEL_YN               =         #{delYn}
+            , MOD_ID               =         #{modId}
+            , MOD_DT               =         SYSDATE
+         <include refid="sqlPkConditions" />
+    </update>
+    <update id="updatePassword">
+       <!-- UPDATE ZZ_USER -->
+       UPDATE ZZ_USER_M
+          SET PWD                  =        #{loginPwd}
+            , PWD_CHG_DT           =        TO_CHAR(SYSDATE,'YYYYMMDDHH24MISS')
+            , PWD_EXPIRE_DT        =        GREATEST(TO_CHAR(ADD_MONTHS(SYSDATE,3),'YYYYMMDD'), PWD_EXPIRE_DT)
+            , MOD_ID               =        #{modId}
+            , MOD_DT               =        SYSDATE
+         <include refid="sqlPkConditions" />
+    </update>
+    
+    <update id="updateLogin">
+       <!-- UPDATE ZZ_USER -->
+       UPDATE ZZ_USER_M
+          SET LAST_LOGIN_DT        =    SYSDATE
+            , LOGIN_FAIL_CNT       =    0   
+         <include refid="sqlPkConditions" />
+    </update>
+    <update id="updateLoginFail">
+       <!-- UPDATE ZZ_USER -->
+       UPDATE ZZ_USER_M
+          SET LAST_LOGIN_DT        =    SYSDATE
+            , LOGIN_FAIL_CNT       =    NVL(LOGIN_FAIL_CNT,0) + 1   
+         <include refid="sqlPkConditions" />
+    </update>
+    
+    <update id="updatDelYn">
+       <!-- UPDATE ZZ_USER -->
+       UPDATE ZZ_USER_M
+          SET DEL_YN               =    #{delYn}
+            , MOD_ID               =    #{modId}
+            , MOD_DT               =    SYSDATE
+         <include refid="sqlPkConditions" />
+    </update>
+    <insert id="insertUser">
+        <selectKey order="BEFORE" keyProperty="userId" resultType="String">
+            <!-- SELECT NVL(MAX(USER_ID),TO_CHAR(SYSDATE,'YYYY') || '000000') + 1  -->
+            SELECT NVL(MAX(EMP_NO),TO_CHAR(SYSDATE,'YYYY') || '000000') + 1 
+             <!-- FROM ZZ_USER -->
+             FROM ZZ_USER_M
+             <!-- WHERE USER_ID LIKE TO_CHAR(SYSDATE,'YYYY') || '%' -->
+             WHERE EMP_NO LIKE TO_CHAR(SYSDATE,'YYYY') || '%'
+        </selectKey>
+        <!-- INSERT INTO ZZ_USER ( -->
+        INSERT INTO ZZ_USER_M (
+               <include refid="sqlCols"/>
+         ) VALUES (
+               #{userId}
+             , #{loginId}
+             , #{loginPwd}
+             , #{userName}
+             , #{userEmail}
+             , NULL 
+             , 0
+             , NVL(#{userLang}, 'KO')
+             , NVL(#{delYn},'N')
+             , #{mobileNo}
+             , NVL(#{emailAuthYn},'N')
+             , NVL(#{mobileAuthYn},'N')
+             , #{niceAuthKey}
+             , #{lastLoginDt}
+             , #{pwdExpireDt}
+             , #{modId}
+             , SYSDATE
+             , #{regId}
+             , SYSDATE
+         )
+    </insert>
+    <delete id="deleteUser">
+       <!-- DELETE ZZ_USER -->
+       DELETE ZZ_USER_M
+       <include refid="sqlPkConditions" />
+    </delete>
+</mapper>
